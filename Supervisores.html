@@ -6,19 +6,13 @@
     <!-- E4GL Disabled: meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- jQuery UI -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<!-- Bootstrap Table -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
 
     <style>
         .li-styles {
@@ -60,13 +54,11 @@
         <br>
         <div class="row" align="left">
             <ul class="nav nav-tabs" id="lista">
-                <li role="presentation" class="active"><a href="segindadmgrl100.r?ppasstmp=3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">SUPERVISORES</a>
-                </li>
-                <li role="presentation"><a href="segindadmgrl200.r?ppasstmp=3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">INSPECTORES</a></li>
-                <li role="presentation"><a href="segindadmgrl300.r?ppasstmp=3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">PUESTOS</a></li>
-                <li role="presentation"><a href="segindadmgrl400.r?ppasstmp=3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">FORMATOS
-                        DE INSP.</a></li>
-                <li role="presentation"><a href="segindadmgrl500.r?ppasstmp=3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">RUBROS</a></li>                        
+                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                        
             </ul>
         </div>
         <br>
@@ -85,6 +77,7 @@
                     <option value="Q083-01" >IQ SC                    </option>
                 </select>
             </div>
+            <!-- Superindentes fijos -->
             <div class="form-group">
                 <label class="control-label">Superintendente</label>
                 <select class="form-control" name="cbosupte" id="cbosupte">
@@ -184,6 +177,8 @@
         </div>
     </div>
     <script>
+        
+
         const ppasstmp = $("#token").val();
         $(document).ready(function () {
             buscar();
@@ -257,9 +252,6 @@
                 $.ajax({
                     url: url,
                     success: function (result) {
-                        //var areas = $(result).filter('#resareas').text();
-                        //var sup = $(result).filter('#res').html();
-                        //$("#ul" + dep).append(sup);
                         $("#aviso").modal("hide");
                         buscar();
                     }
@@ -290,7 +282,6 @@
         function validarsup() {
             var nom = false;
             var sup = false;
-            //var correo  = false;
             var area = false;
             if (!$("#idsup").val()) {
                 nom = false;
@@ -310,14 +301,6 @@
                 $("#dvnombre").removeClass("has-error");
                 sup = true;
             }
-            /*
-            if (!$("#correo").val()) {
-                correo = false;
-                $("#dvcorreo").addClass("has-error");
-            } else {
-                $("#dvcorreo").removeClass("has-error");
-                correo = true;
-            }*/
             var areas = document.querySelectorAll('#fsup input[type=checkbox]:checked');
             if (areas.length <= 0) {
                 area = false;

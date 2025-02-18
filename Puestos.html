@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal de Servicios</title>
+    <!-- E4GL Disabled: meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div>
+            <img src="/img/ADM-SEG.jpg" alt="..." class="">
+        </div>
+        <br>
+        <div class="row" align="left">
+            <ul class="nav nav-tabs" id="lista">
+                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>      
+            </ul>
+        </div>
+        <br>
+    </div>
+    <input type="hidden" name="ppasstmp" id="token" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+    <div align="center">
+        <form class="form-inline" id="fbpuesto">
+            <input type="hidden" name="ppasstmp" id="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+            <div class="form-group">
+                <label class="control-label">Planta</label>
+                <select class="form-control" name="cbosoc" id="cbosoc" onchange="getDeptos()">
+                    <option value="Q002-01" >IQ NE                    </option>
+                    <option value="Q010-01" SELECTED>IQ COATZA                    </option>
+                    <option value="Q010-02" >IQ TX                    </option>
+                    <option value="Q010-03" >IQ HM                    </option>
+                    <option value="Q083-01" >IQ SC                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Departamento</label>
+                <select class="form-control" name="cbodepto" id="cbodepto" onchange="buscar();">
+                    <option value="1">Llenado Y Embarques</option>
+                    <option value="2">Mantenimiento De Celdas</option>
+                    <option value="3">Produccion Cloro-Sosa</option>
+                    <option value="4">Produccion Solidificacion</option>
+                    <option value="5">Mantenimiento Mecanico</option>
+                    <option value="6">Mantenimiento De Solidificacion</option>
+                    <option value="7">Confiabilidad</option>
+                    <option value="8">Mantenimiento Electrico</option>
+                    <option value="9">Instrumentos</option>
+                    <option value="10">Control Y Electrolisis</option>
+                    <option value="11">Proyectos</option>
+                    <option value="12">Control De Calidad</option>
+                    <option value="13">Servicios Generales</option>
+                    <option value="14">Seguridad Industrial Y Control Ambiental</option>
+                    <option value="15">Taller Eléctrico</option>
+                </select>
+            </div>
+            <button title="Buscar" type="button" class="btn btn-success" onclick="buscar()">
+                <span class="fa fa-search"></span>
+            </button>
+        </form>
+    </div>
+    <br>
+    <div class="container" align="right">
+        <button type="button" class="btn btn-primary" onclick="mAddPuesto()">
+            <span class="fa fa-plus"></span>
+            Nuevo puesto
+        </button>
+    </div>
+    <br>
+    <div class="container" id="cont" style="overflow-x:auto;">
+    </div>
+    <div id="mpuesto" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="msup-title" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span class="fa fa-times"></span>
+                    </button>
+                    <h5 class="modal-title" id="modal-title">Nuevo puesto</h5>
+                </div>
+                <div class="modal-body" id="bsup">
+                    <form id="fpuesto">
+                        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+                        <input type="hidden" name="soc" id="soc">
+                        <input type="hidden" name="depto" id="iddepto">
+                        <div class="form-group" id="dvpuesto">
+                            <label class="control-label">Selecciona puesto</label>
+                            <div class="input-group">
+                                <select class="form-control" id="opt" name="puesto">
+                                </select>
+                                <div class="input-group-btn">
+                                    <button title="Registrar nuevo puesto" type="button" class="btn btn-primary" onclick="add()">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="formadd" hidden>
+                            <div class="input-group">
+                                <input placeholder="Nombre de nuevo puesto" class="form-control" type="text" name="np" id="np">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-success" onclick="save()">Guardar</button>
+                                    <button type="button" class="btn btn-danger" onclick="cancel()">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="msj" style="display: none;">
+                        <center>
+                            <h3>Cargando...</h3><br><i class='fa fa-spinner fa-pulse fa-3x'></i>
+                        </center>
+                    </div>
+                </div>
+                <div class="modal-footer" id="mfadd">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary btn-md" onclick="addPuesto()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL ELIMINAR -->
+    <div class="modal fade" id="mdel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-sm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            class="fa fa-times"></span></button>
+                    <h4 class="modal-title" aling="center">Eliminar</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <h4>¿Seguro que desea eliminar?</h4>
+                    <form id="fdel">
+                        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+                        <input id="esoc" name="soc" type="text" hidden>
+                        <input id="edep" name="dep" type="text" hidden>
+                        <input id="epuesto" name="puesto" type="text" hidden>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="eliminar()">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="aviso" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" align="center">
+                    <h4>Guardando...</h4>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const ppasstmp = $("#token").val();
+        $(document).ready(function() {
+            buscar();
+        });
+        function add() {
+            $("#np").val("");
+            $("#formadd").removeClass("has-error");
+            $("#formadd").show();
+            $("#mfadd").hide();
+        }
+        function save() {
+            if ($("#np").val() == '') {
+                $("#formadd").addClass("has-error");
+            } else {
+                $("#formadd").removeClass("has-error");
+                var url = "segindadmgrl300b.r";
+                var soc = $("#cbosoc").val();
+                var puesto = $("#np").val();
+                $.ajax({
+                    url: url,
+                    data: {
+                        ppasstmp: ppasstmp,
+                        soc: soc,
+                        puesto: puesto
+                    },
+                    beforeSend: function() {
+                        $("#fpuesto").hide();
+                        $("#msj").show();
+                    },
+                    success: function(result) {
+                        $("#opt").append($(result).filter('#res').html());
+                        $("#formadd").hide();
+                        $("#msj").hide();
+                        $("#fpuesto").show();
+                        $("#mfadd").show();
+                    }
+                });
+            }
+        }
+        function cancel() {
+            $("#formadd").hide();
+            $("#fpuesto").show();
+            $("#mfadd").show();
+        }
+        function buscar() {
+            var soc = $("#cbosoc").val();
+            var dep = $("#cbodepto").val();
+            var cadena = $("#fbpuesto").serialize();
+            var url = "segindadmgrl300a.r?" + cadena + "&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                beforeSend: function() {
+                    $("#cont").html("<center><h3>Cargando...</h3><br><i class='fa fa-spinner fa-pulse fa-3x'></i></center>");
+                },
+                success: function(result) {
+                    $("#cont").html($(result).filter('#res').html());
+                }
+            });
+        }
+        function getDeptos() {
+            var soc = $("#cbosoc").val();
+            var url = "segindadmgrl200c.r?ppasstmp=" + ppasstmp + "&soc=" + soc;
+            $.ajax({
+                url: url,
+                success: function(result) {
+                    $("#cbodepto").html($(result).filter('#deptos').html());
+                    buscar();
+                }
+            });
+        }
+        function getPuestos(soc) {
+            /*Obtener puesto de plantas*/
+            var url = "segindadmgrl300c.r";
+            $.ajax({
+                url: url,
+                data: {
+                    ppasstmp: ppasstmp,
+                    soc: soc
+                },
+                success: function(result) {
+                    $("#opt").html($(result).filter('#res').html());
+                }
+            });
+        }
+        function mAddPuesto() {
+            $("#fpuesto").trigger("reset");
+            $("#dvpuesto").removeClass("has-error");
+            $("#np").removeClass("has-error");
+            $("#formadd").hide();
+            $("#soc").val($("#cbosoc").val());
+            $("#iddepto").val($("#cbodepto").val());
+            $("#mpuesto").modal("show");
+            getPuestos($("#cbosoc").val());
+        }
+        function addPuesto() {
+            if ($("#opt").val() != "") {
+                $("#mpuesto").modal('hide');
+                $("#aviso").modal("show");
+                var cadena = $("#fpuesto").serialize();
+                var url = "segindadmgrl300d.r?" + cadena + "&sid=" + Math.random();
+                $.ajax({
+                    url: url,
+                    success: function(result) {
+                        buscar();
+                        $("#aviso").modal("hide");
+                    }
+                });
+            }
+        }
+        function mDel(puesto) {
+            var idpuesto = $(puesto).data("id");
+            var soc = $("#cbosoc").val();
+            var dep = $("#cbodepto").val();
+            $("#epuesto").val(idpuesto);
+            $("#edep").val(dep);
+            $("#esoc").val(soc);
+            $("#mdel").modal("show");
+        }
+        function eliminar() {
+            var cadena = $("#fdel").serialize();
+            var url = "segindadmgrl300e.r?" + cadena + "&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                success: function(result) {
+                    buscar();
+                    $("#mdel").modal('hide');
+                }
+            });
+        }
+    </script>
+</body>
+
+
+<!-- Generated by Webspeed: http://www.webspeed.com/ -->

@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal de Servicios</title>
+    <!-- E4GL Disabled: meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+
+    <style>
+        #msup {
+            z-index: 1040;
+        }
+        #modbus {
+            z-index: 1050;
+        }
+        .d-block {
+            display: block;
+        }
+        .t-left {
+            text-align: left;
+        }
+        .ulpadding {
+            padding-left: 15px;
+        }
+        .dvedit {
+            cursor: text;
+            background-color: #ddd;
+            border: 1px solid black;
+        }
+        .dvcont {
+            min-width: 100px;
+            word-break: break-all;
+        }
+        .nowrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- <div>
+            <img src="/img/ADM-SEG.jpg" alt="..." class="">
+        </div> -->
+        <br>
+        <div class="row" align="left">
+            <ul class="nav nav-tabs" id="lista">
+                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>      
+            </ul>
+        </div>
+        <br>
+    </div>
+    <input type="hidden" name="ppasstmp" id="token" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+    <div align="center">
+        <form class="form-inline" id="finspec">
+            <input type="hidden" name="ppasstmp" id="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+            <div class="form-group">
+                <label class="control-label">Planta</label>
+                <select class="form-control" name="cbosoc" id="cbosoc" onchange="getDeptos()">
+                    <option value="Q002-01" >IQ NE                    </option>
+                    <option value="Q010-01" SELECTED>IQ COATZA                    </option>
+                    <option value="Q010-02" >IQ TX                    </option>
+                    <option value="Q010-03" >IQ HM                    </option>
+                    <option value="Q083-01" >IQ SC                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Departamento</label>
+                <select class="form-control" name="cbodepto" id="cbodepto" onchange="getSups()">
+                    <option value="1">Llenado Y Embarques</option>
+                    <option value="2">Mantenimiento De Celdas</option>
+                    <option value="3">Produccion Cloro-Sosa</option>
+                    <option value="4">Produccion Solidificacion</option>
+                    <option value="5">Mantenimiento Mecanico</option>
+                    <option value="6">Mantenimiento De Solidificacion</option>
+                    <option value="7">Confiabilidad</option>
+                    <option value="8">Mantenimiento Electrico</option>
+                    <option value="9">Instrumentos</option>
+                    <option value="10">Control Y Electrolisis</option>
+                    <option value="11">Proyectos</option>
+                    <option value="12">Control De Calidad</option>
+                    <option value="13">Servicios Generales</option>
+                    <option value="14">Seguridad Industrial Y Control Ambiental</option>
+                    <option value="15">Taller Eléctrico</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Supervisor</label>
+                <select class="form-control" name="cbosup" id="cbosup">
+                </select>
+            </div>
+            <acronym title="Buscar">
+                <button type="button" class="btn btn-success" onclick="buscar()">
+                    <span class="fa fa-search"></span>
+                </button>
+            </acronym>
+        </form>
+    </div>
+    <br>
+    <div class="container" align="right">
+        <button type="button" class="btn btn-primary" onclick="mAddInsp()">
+            <span class="fa fa-plus"></span>
+            Nuevo inspector
+        </button>
+    </div>
+    <br>
+    <div class="container" id="cont" style="overflow-x:auto;">
+    </div>
+    <div id="minsp" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="msup-title" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span class="fa fa-times"></span>
+                    </button>
+                    <h5 class="modal-title" id="modal-title">Nuevo inspector</h5>
+                </div>
+                <div class="modal-body" id="bsup">
+                    <form id="finsp">
+                        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+                        <input type="hidden" name="soc" id="fsoc">
+                        <input type="hidden" name="sup" id="fsup">
+                        <input type="hidden" name="correo" id="correo">
+                        <div class="form-group" id="dvinsp">
+                            <label class="control-label">Nombre de empleado</label>
+                            <div class="input-group">
+                                <input type="hidden" name="idinsp" id="idinsp" value="">
+                                <input type="text" class="form-control" id="nombre" name="nombre">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" id="btnbus" name="btnbus"
+                                        type="button">Buscar</button>
+                                </span>
+                            </div>
+                            <p id="divusurespinfo" hidden style="color: red;">De click en buscar y seleccione</p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-primary btn-md" onclick="addInsp()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="modal fade modal-second-level" id="modbus" tabindex="-1" role="dialog" aria-hidden="true">    <div class="modal-dialog" role="document">        <div class="modal-content">            <div class="modal-header">                <button type="button" class="close" data-dismiss="modal" aria-label="Close">                    <span class="fa fa-times"></span>                </button>                <h4 class="modal-title">Usuarios que contienen <span id="descusu"></span></h4>            </div>            <div class="modal-body" id="listusu">            </div>            <div class="modal-footer">                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>            </div>        </div>    </div></div>    <!-- MODAL ELIMINAR -->
+    <div class="modal fade" id="mdel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-sm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            class="fa fa-times"></span></button>
+                    <h4 class="modal-title" aling="center">Eliminar</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <h4>¿Seguro que desea eliminar?</h4>
+                    <form id="fdel">
+                        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+                        <input id="esoc" name="soc" type="text" hidden>
+                        <input id="esup" name="sup" type="text" hidden>
+                        <input id="einsp" name="insp" type="text" hidden>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="eliminar()">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="aviso" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" align="center">
+                    <h4>Guardando...</h4>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const ppasstmp = $("#token").val();
+        $(document).ready(function () {
+            getSups();
+        });
+        function getSups() {
+            var soc = $("#cbosoc").val();
+            var dep = $("#cbodepto").val();
+            var url = "segindadmgrl200a.r?ppasstmp=" + ppasstmp + "&soc=" + soc + "&dep=" + dep + "&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                success: function (result) {
+                    $("#cbosup").html($(result).filter('#sups').html());
+                    buscar();
+                }
+            });
+        }
+        function getDeptos() {
+            var soc = $("#cbosoc").val();
+            var url = "segindadmgrl200c.r?ppasstmp=" + ppasstmp + "&soc=" + soc;
+            $.ajax({
+                url: url,
+                success: function (result) {
+                    $("#cbodepto").html($(result).filter('#deptos').html());
+                    getSups();
+                }
+            });
+        }
+        function mDel(insp) {
+            var idinsp = $(insp).data("insp");
+            var soc = $("#cbosoc").val();
+            var sup = $("#cbosup").val();
+            $("#einsp").val(idinsp);
+            $("#esup").val(sup);
+            $("#esoc").val(soc);
+            $("#mdel").modal("show");
+        }
+        function eliminar() {
+            var cadena = $("#fdel").serialize();
+            var url = "segindadmgrl200e.r?" + cadena + "&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                success: function (result) {
+                    buscar();
+                    $("#mdel").modal('hide')
+                }
+            });
+        }
+        var tmpmail = "";
+        function edit(idins) {
+            tmpmail = $("#det" + idins).text();
+            $("#det" + idins).prop("contenteditable", true); //hace editable el texto
+            $("#det" + idins).addClass("dvedit"); //agrega estilos al cuadro
+            $("#btnedt" + idins).hide(); //oculta editar 
+            $("#btndel" + idins).hide(); //oculta eliminar
+            $("#btnsave" + idins).show(); //muestra guardar
+        }
+        function save(idins) {
+            var txtedit = $("#det" + idins).text().replace("\n","");
+            $("#det" + idins).prop("contenteditable", false);
+            $("#det" + idins).removeClass("dvedit");
+            if (tmpmail != txtedit) {
+                //si hubo cambio mandar a server
+                var url = "segindadmgrl200d.r";
+                $.ajax({
+                    url: url,
+                    data: {
+                        soc: $("#cbosoc").val(),
+                        sup: $("#cbosup").val(),
+                        correo: txtedit,
+                        idinsp: idins,
+                        org: 1,
+                        sid: Math.random()
+                    },
+                    beforeSend: function () {
+                        $("#det" + idins).html("<center><i class='fa fa-spinner fa-pulse fa-3x'></i></center>");
+                    },
+                    success: function (result) {
+                        $("#det" + idins).html(txtedit);
+                        $("#btnsave" + idins).hide(); //oculta guardar
+                        $("#btnedt" + idins).show(); //muestra editar 
+                        $("#btndel" + idins).show(); //muestra eliminar
+                    }
+                });
+            } else {
+                //si no hubo cambio no mandar a server
+                $("#btnsave" + idins).hide(); //oculta guardar
+                $("#btnedt" + idins).show(); //muestra editar 
+                $("#btndel" + idins).show(); //muestra eliminar
+            }
+        }
+        function buscar() {
+            var soc = $("#cbosoc").val();
+            var dep = $("#cbodepto").val();
+            var sup = $("#cbosup").val();
+            var url = "segindadmgrl200b.r?ppasstmp=" + ppasstmp + "&soc=" + soc + "&dep=" + dep + "&sup=" + sup;
+            $.ajax({
+                url: url,
+                success: function (result) {
+                    $("#cont").html($(result).filter('#res').html());
+                }
+            });
+        }
+        function mAddInsp() {
+            $("#finsp").trigger("reset");
+            var soc = $("#cbosoc").val();
+            var sup = $("#cbosup").val();
+            $("#fsoc").val(soc);
+            $("#fsup").val(sup);
+            $("#dvinsp").removeClass("has-error");
+            $("#divusurespinfo").hide();
+            $("#minsp").modal("show");
+        }
+        $("#btnbus").click(function () {
+            if ($("#nombre").val() == "") {
+                alert("Por favor introducir nombre");
+                $("#nombre").focus();
+            } else {
+                $("#idinsp").val("");
+                $('#modbus').modal("show");
+                listusuarios();
+            }
+        });
+        function listusuarios() {
+            var usu = $("#nombre").val();
+            var soc = $("#cbosoc").val();
+            var url = "segindadmgrl100e.r";
+            $.ajax({
+                url: url,
+                data: {
+                    ppasstmp: ppasstmp,
+                    soc: soc,
+                    idsup: usu
+                },
+                success: function (result) {
+                    $("#descusu").html(usu);
+                    $("#listusu").html($(result).filter('#res').html());
+                    $("#table").attr("data-toggle", "table");
+                    $("#table").attr("data-show-columns", "false");
+                    $("#table").attr("data-search", "yes");
+                }
+            });
+        }
+        function selsup(jusu, jdusu, correo) {
+            $('#nombre').val(jdusu);
+            $('#idinsp').val(jusu);
+            $('#correo').val(correo);
+            $('#modbus').modal("hide");
+        }
+        function addInsp() {
+            if (validar()) {
+                $("#minsp").modal('hide');
+                $("#aviso").modal("show");
+                var cadena = $("#finsp").serialize();
+                var url = "segindadmgrl200d.r?" + cadena + "&sid=" + Math.random();
+                $.ajax({
+                    url: url,
+                    success: function (result) {
+                        buscar();
+                        $("#aviso").modal("hide");
+                    }
+                });
+            }
+        }
+        function validar() {
+            var insp = false;
+            var idsup = false;
+            if (!$("#idinsp").val()) {
+                insp = false;
+                $("#dvinsp").addClass("has-error");
+            } else {
+                $("#dvinsp").removeClass("has-error");
+                insp = true;
+            }
+            if (!$("#nombre").val() || !$("#idinsp").val()) {
+                idsup = false;
+                $("#divusurespinfo").show();
+                $("#dvinsp").addClass("has-error");
+            } else {
+                $("#divusurespinfo").hide();
+                $("#dvinsp").addClass("has-error");
+                idsup = true;
+            }
+            return insp && idsup;
+        }
+    </script>
+</body>
+
+
+<!-- Generated by Webspeed: http://www.webspeed.com/ -->

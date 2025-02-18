@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal de Servicios</title>
+    <!-- E4GL Disabled: meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+    <style>
+        .col10 {
+            width: 10%;
+        }
+        .btnAdd {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .ocultar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div>
+            <img src="/img/ADM-SEG.jpg" alt="...">
+        </div>
+        <br>
+        <div class="row" align="left">
+            <ul class="nav nav-tabs" id="lista">
+                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>      
+            </ul>
+        </div>
+        <br>
+        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG" id="ppasstmp">
+        <form class="form-inline text-center" id="fpart">
+            <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+            <div class="form-group">
+                <label class="control-label">Planta</label>
+                <select class="form-control" name="cbosoc" id="cbosoc">
+                    <option value="Q002-01" >IQ NE                    </option>
+                    <option value="Q010-01" >IQ COATZA                    </option>
+                    <option value="Q010-02" >IQ TX                    </option>
+                    <option value="Q010-03" >IQ HM                    </option>
+                    <option value="Q083-01" >IQ SC                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-success" onclick="buscar();">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+        <br>
+        <div class="container">
+            <div class="btnAdd">
+                <button class="btn btn-success btn-md" id="btnModalAddRubro">
+                    <i class="fa fa-plus"></i>
+                    Agregar rubro
+                </button>
+            </div>
+            <br>
+            <div id="contres" class="table-responsive">
+            </div>
+            <!-- <table id="tbl" class="table table-striped table-hover table-condensed table-bordered ">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Descripción</th>
+                        <th class="col10">Porcentaje</th>
+                        <th class="col10">Min</th>
+                        <th class="col10">Obligatorio</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order">1</td>
+                        <td>
+                            <input id="preg1" type="text" class="form-control">
+                        </td>
+                        <td>
+                            <input id="preg1" type="text" class="form-control">
+                        </td>
+                        <td>
+                            <input class="form-control" id="styled-checkbox-1" type="text">
+                        </td>
+                        <td>
+                            <input class="styled-checkbox" id="styled-checkbox-1" type="checkbox" value="value1">
+                            <label for="styled-checkbox-1">&nbsp;</label>
+                        </td>
+                        <td>
+                            <button id="btndel1" title="ELIMINAR" class="btn btn-danger btn-md" onclick="remove(this)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: end;">
+                            <button title="AGREGAR" class="btn btn-success btn-md" onclick="add()">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> -->
+        </div>
+        <div class="modal fade" id="modalAdd">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <h4 class="modal-title text-center" id="mAddTT">Nuevo rubro</h4>
+                    </div>
+                    <div class="modal-body" id="mBodyAdd">
+                        <form id="fRubro" class="form-horizontal">
+                            <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+                            <input type="hidden" name="soc" id="soc">
+                            <div class="form-group" id="dvnombre">
+                                <label for="nombre" class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre descriptivo del rubro">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div id="dvporc">
+                                    <label for="porc" class="col-sm-2 control-label">Porcentaje</label>
+                                    <div class="col-sm-4">
+                                        <input type="number" name="porc" class="form-control" id="porc" placeholder="%" min="0">
+                                        <span id="helpBlock1" class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div id="dvmin">
+                                    <label for="minimo" class="col-sm-2 control-label">Mínimo </label>
+                                    <div class="col-sm-4">
+                                        <input type="number" name="minimo" class="form-control" id="minimo" placeholder="Mínimo a programar" min="0">
+                                        <span id="helpBlock2" class="help-block"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="check_obligatorio">Obligatorio
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="obligatorio" id="obligatorio">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnAddRubro">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="mConfElim">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <h4 class="modal-title text-center">CONFIRMACIÓN</h4>
+                    </div>
+                    <div class="modal-body mConfBody text-center">
+                        ¿ELIMINAR RUBRO?
+                    </div>
+                    <div class="modal-footer confooter">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary elim">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<div class="modal fade" id="modalespera" tabindex="-1" role="dialog" aria-hidden="true">    <div class="modal-dialog modal-md">        <div class="modal-content">            <div class="modal-body">                <div align="center">                    <h4>Guardando, espere...</h4>                    <i class="fa fa-spinner fa-spin fa-3x"></i>                </div>            </div>        </div>    </div></div>    </div>
+    <script>
+        var modalLock = {
+            backdrop: 'static',
+            keyboard: false
+        };
+        var porcAct = 0;
+        $(document).on("click", ".btneliminar", function() {
+            $(".elim").data("idrub", $(this).data("folio"));
+            $("#mConfElim").modal("show");
+        });
+        $(document).on("click", ".btneditar", function() {
+            var idrub = $(this).data("folio");
+            $(".edit").data("idrub", $(this).data("folio"));
+            var url = "segindparadm100a.r?ppasstmp=" + token + "&cbosoc=" + $("#cbosoc").val() + "&idrub=" + idrub + "&fn=1&sid=" + Math.random();
+            url += "&tmp=1";
+            $.ajax({
+                url: url,
+                beforeSend: function() {
+                    $("#mAddTT").text("Editar rubro");
+                    // $("#fRubro").trigger('reset');                    
+                },
+                success: function(result) {
+                    $("#modalAdd").modal("show");
+                    $("#mBodyAdd").html($(result).filter('#res').html());
+                    // $("#modalespera").modal("hide");
+                }
+            });
+        });
+        $(".elim").click(function(e) {
+            e.preventDefault();
+            var rub = $(this).data("idrub");
+            var url = "segindparadm100a.r?ppasstmp=" + token + "&cbosoc=" + $("#cbosoc").val() + "&idrub=" + rub + "&fn=7&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                beforeSend: function() {
+                    $("#mConfElim").modal("hide");
+                    $("#modalespera").modal(modalLock);
+                },
+                success: function(response) {
+                    $("#modalespera").modal("hide");
+                    buscar();
+                }
+            });
+        });
+        $(".edit").click(function(e) {
+            e.preventDefault();
+            var rub = $(this).data("idrub");
+            var url = "segindparadm100a.r?ppasstmp=" + token + "&cbosoc=" + $("#cbosoc").val() + "&idrub=" + rub + "&fn=7&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                beforeSend: function() {
+                    $("#mConfElim").modal("hide");
+                    $("#modalespera").modal(modalLock);
+                },
+                success: function(response) {
+                    $("#modalespera").modal("hide");
+                    buscar();
+                }
+            });
+        });
+        var token = "";
+        $(function() {
+            token = $("#ppasstmp").val();
+            $('[data-toggle="tooltip"]').tooltip();
+            buscar();
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#btnModalAddRubro").click(function(e) {
+                e.preventDefault();
+                $("#mAddTT").text("Nuevo rubro");
+                $('#modalAdd').modal('show');
+                $("#fRubro").trigger('reset');
+                $("#nombre").val("");
+                $("#nombre").prop("disabled", false);
+                $("#porc").val("");
+                $("#minimo").val("");
+                $("#check_obligatorio").val("");
+                $("#check_obligatorio").prop("disabled", false);
+                $("#idrub").val("");
+                $("#porcselc").val("");
+            });
+            $("#btnAddRubro").click(function(e) {
+                e.preventDefault();
+                guardarRubro();
+            });
+        });
+        function buscar() {
+            var cadena = $('#fpart').serialize();
+            var url = "segindparadm100a.r?" + cadena + "&fn=1&sid=" + Math.random();
+            $.ajax({
+                url: url,
+                beforeSend: function() {
+                    $("#contres").html("<center> <i class='fa fa-spinner fa-pulse fa-3x'></i></center>");
+                },
+                success: function(result) {
+                    $("#contres").html($(result).filter('#res').html());
+                    porcAct = parseInt($("#porcAct").val());
+                    console.log(porcAct);
+                    if (porcAct == 100) {
+                        $("#btnModalAddRubro").addClass("hidden");
+                    } else {
+                        $("#btnModalAddRubro").removeClass("hidden");
+                    }
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+        }
+        function validRubro() {
+            var ps = $("#porcselc").val();
+            ps = porcAct - ps;
+            console.log(ps);
+            var nombre = true;
+            var porc = true;
+            var minimo = true;
+            if (!$("#nombre").val()) {
+                nombre = false;
+                $("#dvnombre").addClass("has-error");
+            } else {
+                $("#dvnombre").removeClass("has-error");
+            }
+            if (!$("#porc").val()) {
+                porc = false;
+                $("#dvporc").addClass("has-error");
+            } else {
+                var tt = parseInt(ps) + parseInt($("#porc").val());
+                console.log(tt);
+                if (tt > 100) {
+                    $("#helpBlock1").removeClass("hidden");
+                    porc = false;
+                    $("#dvporc").addClass("has-error");
+                    $("#helpBlock1").text("El porcentaje general no debe ser mayor a 100%");
+                } else {
+                    $("#helpBlock1").addClass("hidden");
+                    $("#dvporc").removeClass("has-error");
+                }
+            }
+            if (!$("#minimo").val()) {
+                minimo = false;
+                $("#dvmin").addClass("has-error");
+            } else {
+                if ($("#minimo").val() <= 0) {
+                    $("#helpBlock2").removeClass("hidden");
+                    minimo = false;
+                    $("#dvmin").addClass("has-error");
+                    $("#helpBlock2").text("Seleccione valores mayores a 0 ");
+                } else {
+                    $("#helpBlock2").addClass("hidden");
+                    $("#dvmin").removeClass("has-error");
+                }
+            }
+            return nombre && minimo && porc;
+        }
+        function guardarRubro() {
+            if (validRubro()) {
+                $("#obligatorio").val($("#check_obligatorio").is(':checked') ? "yes" : "no");
+                $("#soc").val($("#cbosoc").val());
+                var cadena = $('#fRubro').serialize();
+                var url = "segindparadm100a.r?" + cadena + "&fn=2&sid=" + Math.random();
+                $.ajax({
+                    url: url,
+                    beforeSend: function() {
+                        $("#modalAdd").modal("hide");
+                        $("#modalespera").modal(modalLock);
+                    },
+                    success: function(result) {
+                        var res = $(result).filter("#res").text().trim();
+                        if (res != "") {
+                            alert("ERROR INTERNO, INTENTELO MÁS TARDE. \n" + res);
+                        }
+                        $("#modalespera").modal("hide");
+                        buscar();
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+
+
+<!-- Generated by Webspeed: http://www.webspeed.com/ -->
