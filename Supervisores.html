@@ -257,102 +257,161 @@
          }
        ]
        
-        function marcar_todas(check) {
-            var checkboxes = $(check).closest('form').find(':checkbox');
-            checkboxes.prop('checked', $(check).is(':checked'));
-        }
-        function suptes() {
-            var soc = $("#cbosoc").val();
-            var url = "segindadmgrl100a.r?ppasstmp=" + ppasstmp + "&soc=" + soc + "&sid=" + Math.random();
-            $.ajax({
-                url: url,
-                success: function (result) {
-                    $("#cbosupte").html($(result).filter('#res').html());
-                    buscar();
-                }
+       function suptes() {
+        const selectedPlanta = $("#cbosoc").val();
+        const planta = dummyData.find(p => p.planta === (selectedPlanta === "Q010-01" ? "IQ Coatza" : "IQ TX"));
+        
+        // Clear and rebuild superintendente select
+        $("#cbosupte").empty();
+        $("#cbosupte").append('<option value="0">TODOS</option>');
+        
+        if (planta) {
+            planta.superintendentes.forEach(supte => {
+                $("#cbosupte").append(`<option value="${supte.nombre}">${supte.nombre}</option>`);
             });
         }
-        function buscar() {
-            $('#cont').html('<center> <i class="fa fa-spinner fa-pulse fa-3x"></i></center>');
-            var cadena = $("#fadmin").serialize();
-            var url = "segindadmgrl100b.r?" + cadena + "&sid=" + Math.random();
-            $.ajax({
-                url: url,
-                success: function (result) {
-                    $("#cont").html($(result).filter('#res').html());
-                }
-            });
+        
+        buscar();
+    }
+    
+    function buscar() {
+        $('#cont').html('<center> <i class="fa fa-spinner fa-pulse fa-3x"></i></center>');
+        
+        const selectedPlanta = $("#cbosoc").val();
+        const selectedSupte = $("#cbosupte").val();
+        
+        const planta = dummyData.find(p => p.planta === (selectedPlanta === "Q010-01" ? "IQ Coatza" : "IQ TX"));
+        
+        if (!planta) {
+            $('#cont').html('<div class="alert alert-warning">No se encontraron datos para esta planta</div>');
+            return;
         }
-        function mSup(dep) {
-            $("#fsup").trigger("reset");
-            var depto = $(dep).data("dep");
-            var ddep = $(dep).data("ddep");
-            ddep = ddep.toUpperCase();
-            var soc = $("#cbosoc").val();
-            $("#soc").val(soc);
-            $("#depto").val(depto);
-            $("#dvidsup").removeClass("has-error");
-            $("#dvnombre").removeClass("has-error");
-            $("#divusurespinfo").hide();
-            $("#modal-title").html("<strong>NUEVO SUPERVISOR " + ddep + "</strong>");
-            var url = "segindadmgrl100d.r";
-            $.ajax({
-                url: url,
-                data: {
-                    ppasstmp: ppasstmp,
-                    soc: soc,
-                    depto: depto
-                },
-                success: function (result) {
-                    $("#dvareas").html($(result).filter('#res').html());
-                    $("#msup").modal('show');
-                }
-            });
-        }
-        function addSup() {
-            if (validarsup()) {
-                $("#msup").modal('hide');
-                $("#aviso").modal("show");
-                var dep = $("#depto").val();
-                var areas = document.querySelectorAll('#fsup input[type=checkbox]:checked');
-                var arr = new Array();
-                for (i = 0; i < areas.length; i++) {
-                    if ($.isNumeric(areas[i].value)) {
-                        arr[i] = areas[i].value;                        
-                    }                    
-                }
-                var cadena = $("#fsup :input[type!=checkbox]").serialize();
-                var url = "segindadmgrl100c.r?" + cadena + "&areas=" + arr + "&sid=" + Math.random();
-                $.ajax({
-                    url: url,
-                    success: function (result) {
-                        $("#aviso").modal("hide");
-                        buscar();
-                    }
+        
+        let tableHTML = `
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Superintendente</th>
+                            <th>Departamento</th>
+                            <th>Áreas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        planta.superintendentes.forEach(supte => {
+            if (selectedSupte === "0" || selectedSupte === supte.nombre) {
+                supte.departamentos.forEach(depto => {
+                    tableHTML += `
+                        <tr>
+                            <td>${supte.nombre}</td>
+                            <td>
+                                ${depto.nombre}<br>
+                                JEFE:<br>
+                                ${depto.jefe}
+                                <button class="btn btn-success btn-xs" 
+                                    onclick="mSup(this)" 
+                                    data-dep="${depto.nombre}" 
+                                    data-ddep="${depto.nombre}">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </td>
+                            <td>
+                    `;
+                    
+                    Object.entries(depto.talleres).forEach(([taller, empleados]) => {
+                        tableHTML += `
+                            <div class="li-styles" id="li${taller}${supte.nombre.replace(/\s/g, '')}">
+                                ${taller}
+                                <button class="btn btn-danger btn-xs" 
+                                    onclick="mDel(this)" 
+                                    data-sup="${supte.nombre}" 
+                                    data-dep="${depto.nombre}" 
+                                    data-area="${taller}">
+                                    <span class="fa fa-times"></span>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    
+                    tableHTML += `</td></tr>`;
                 });
             }
+        });
+        
+        tableHTML += `</tbody></table></div>`;
+        $('#cont').html(tableHTML);
+    }
+    
+    function mSup(dep) {
+        $("#fsup").trigger("reset");
+        const depto = $(dep).data("dep");
+        const ddep = $(dep).data("ddep");
+        const soc = $("#cbosoc").val();
+        
+        $("#soc").val(soc);
+        $("#depto").val(depto);
+        $("#dvidsup").removeClass("has-error");
+        $("#dvnombre").removeClass("has-error");
+        $("#divusurespinfo").hide();
+        $("#modal-title").html("<strong>NUEVO SUPERVISOR " + ddep.toUpperCase() + "</strong>");
+        
+        // Simulate areas data
+        const areasHTML = `
+            <label class="control-label">Áreas</label>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" onclick="marcar_todas(this)"> Seleccionar Todo
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="area1"> Área 1
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="area2"> Área 2
+                </label>
+            </div>
+        `;
+        
+        $("#dvareas").html(areasHTML);
+        $("#msup").modal('show');
+    }
+    
+    function addSup() {
+        if (validarsup()) {
+            $("#msup").modal('hide');
+            $("#aviso").modal("show");
+            
+            // Simulate adding supervisor
+            setTimeout(() => {
+                $("#aviso").modal("hide");
+                buscar();
+            }, 1000);
         }
-        function mDel(sup) {
-            var idsup = $(sup).data("sup");
-            var iddep = $(sup).data("dep");
-            var area = $(sup).data("area");
-            $("#delsup").val(idsup);
-            $("#deldepto").val(iddep);
-            $("#delarea").val(area);
-            $("#mdel").modal("show");
-        }
-        function eliminar() {
-            var soc = $("#cbosoc").val();
-            var cadena = $("#fdel").serialize();
-            var url = "segindadmgrl100f.r?" + cadena + "&soc=" + soc + "&sid=" + Math.random();
-            $.ajax({
-                url: url,
-                success: function (result) {
-                    $("#li" + $("#delarea").val() + $("#delsup").val()).remove();
-                    $("#mdel").modal('hide')
-                }
-            });
-        }
+    }
+    
+    function mDel(sup) {
+        const idsup = $(sup).data("sup");
+        const iddep = $(sup).data("dep");
+        const area = $(sup).data("area");
+        
+        $("#delsup").val(idsup);
+        $("#deldepto").val(iddep);
+        $("#delarea").val(area);
+        $("#mdel").modal("show");
+    }
+    
+    function eliminar() {
+        const area = $("#delarea").val();
+        const sup = $("#delsup").val();
+        
+        $(`#li${area}${sup.replace(/\s/g, '')}`).remove();
+        $("#mdel").modal('hide');
+    }
         function validarsup() {
             var nom = false;
             var sup = false;
