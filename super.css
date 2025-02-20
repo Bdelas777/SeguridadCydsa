@@ -41,17 +41,17 @@
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 10px 15px;
             cursor: pointer;
             border-radius: 5px;
             font-size: 16px;
+            margin-top: 10px;
         }
+
 
         .btn i {
             margin-right: 5px;
         }
 
-        /* Estilos para los modales */
         .modal {
             display: none;
             position: fixed;
@@ -77,4 +77,5 @@
             color: red;
             font-size: 20px;
         }
+        
     </style>

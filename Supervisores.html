@@ -28,7 +28,7 @@
           </ul>
       </div>
 
-      <div class="menu-toggle">☰ Menú</div>
+      <div class="menu-toggle ">☰ Menú</div>
       
       <div class="mobile-menu">
           <a href="/Supervisores.html">SUPERVISORES</a>
@@ -40,37 +40,39 @@
   </div>
 
     <!-- Filtros -->
-    <div class="row">
-      <div class="col-md-3">
-        <input type="text" id="filterPlanta" class="form-control" placeholder="Planta">
+    <div class="row ">
+      <div class="col-xs-12 col-md-2  ">
+          <input type="text" id="filterPlanta" class="form-control " placeholder="Planta">
       </div>
-      <div class="col-md-3">
-        <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
+      <div class="col-xs-12 col-md-2 ">
+          <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
       </div>
-      <div class="col-md-3">
-        <input type="text" id="filterJefe" class="form-control" placeholder="Jefe">
+      <div class="col-xs-12 col-md-2 ">
+          <input type="text" id="filterJefe" class="form-control" placeholder="Jefe">
       </div>
-      <div class="col-md-3">
-        <input type="text" id="filterDepartamento" class="form-control" placeholder="Departamento">
+      <div class="col-xs-12 col-md-2 ">
+          <input type="text" id="filterDepartamento" class="form-control" placeholder="Departamento">
       </div>
-      <div class="col-md-3">
-        <input type="text" id="filterTaller" class="form-control" placeholder="Taller"> 
+      <div class="col-xs-12 col-md-2 ">
+          <input type="text" id="filterTaller" class="form-control" placeholder="Taller"> 
       </div>
-
-       <div class="menu-container">
-        <button id="showMenu" class="btn">
-            <i class="fa fa-cog"></i> Opciones
-        </button>
-
-        <ul class="dropdown-menu" id="dropdownMenu">
-            <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
-            <li><a onclick="openModal('departamentoModal')">Agregar Departamento</a></li>
-            <li><a onclick="openModal('jefeModal')">Agregar Jefe</a></li>
-            <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
-        </ul>
+  
+      <div class="col-xs-12 col-md-2  text-center">
+          <div class="menu-container">
+              <button id="showMenu" class="btn btn-block">
+                  <i class="fa fa-cog"></i> Opciones
+              </button>
+  
+              <ul class="dropdown-menu" id="dropdownMenu">
+                  <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
+                  <li><a onclick="openModal('departamentoModal')">Agregar Departamento y Jefe</a></li>
+                  <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
+              </ul>
+          </div>
       </div>
-
-    </div>
+  </div>
+  
+  
 
     <div id="superintendenteModal" class="modal">
       <div class="modal-content">
@@ -83,18 +85,12 @@
   <div id="departamentoModal" class="modal">
       <div class="modal-content">
           <span class="close" onclick="closeModal('departamentoModal')">&times;</span>
-          <h2>Agregar Departamento</h2>
+          <h2>Agregar Departamento y jefe</h2>
           <p>Formulario para agregar Departamento.</p>
       </div>
   </div>
 
-  <div id="jefeModal" class="modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeModal('jefeModal')">&times;</span>
-          <h2>Agregar Jefe</h2>
-          <p>Formulario para agregar Jefe.</p>
-      </div>
-  </div>
+
 
   <div id="tallerModal" class="modal">
       <div class="modal-content">
@@ -236,6 +232,7 @@
       });
     }
 
+    // Muestra el modal con los detalles de los talleres
     function verModal(taller, superintendente) {
       var modalLista = $("#modalTallerLista");
       modalLista.empty();
