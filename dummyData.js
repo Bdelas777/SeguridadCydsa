@@ -1,4 +1,3 @@
-// dummyData.js
 const dummyData = [
     {
         "planta": "IQ Coatza",

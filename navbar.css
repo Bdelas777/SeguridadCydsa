@@ -1,0 +1,61 @@
+<style>
+    .nav-tabs {
+        padding: 10px;
+    }
+    .nav-tabs > li > a {
+        color: black;
+    }
+    .nav-tabs > li.active > a,
+    .nav-tabs > li.active > a:focus,
+    .nav-tabs > li.active > a:hover {
+        background-color: blue !important;
+        color: white !important;
+    }
+    
+    /* Estilos para el menú en modo mobile */
+    .mobile-menu {
+        display: none;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .mobile-menu a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: black;
+        border-bottom: 1px solid #ddd;
+    }
+    .mobile-menu a:last-child {
+        border-bottom: none;
+    }
+    .mobile-menu a:hover {
+        background-color: blue;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .nav-tabs {
+            display: none;
+        }
+        .menu-toggle {
+            display: block;
+            background-color: blue;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .menu-toggle, .mobile-menu {
+            display: none;
+        }
+    }
+    .space-nav{
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+</style>

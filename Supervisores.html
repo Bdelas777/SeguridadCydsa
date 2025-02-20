@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Superintendentes</title>
+  <title>Portal de Servicios</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -12,21 +12,33 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
   <script src="dummyData.js"></script>
+  <link rel="stylesheet" href="navbar.css">  
 </head>
 <body>
   <div class="container">
-    <br>
-        <div class="row" align="left">
-            <ul class="nav nav-tabs" id="lista">
-                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
-                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
-                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
-                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
-                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
-            </ul>
-        </div>
-        <br>
-    
+    <div class="container">
+      
+      <div class="row space-nav" align="left" >
+          <ul class="nav nav-tabs" id="lista">
+              <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+              <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+              <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+              <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+              <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
+          </ul>
+      </div>
+
+      <div class="menu-toggle">☰ Menú</div>
+      
+      <div class="mobile-menu">
+          <a href="/Supervisores.html">SUPERVISORES</a>
+          <a href="/Inspectores.html">INSPECTORES</a>
+          <a href="/Puestos.html">PUESTOS</a>
+          <a href="/Formatos.html">FORMATOS DE INSP.</a>
+          <a href="/Rubros.html">RUBROS</a>
+      </div>
+  </div>
+
     <!-- Filtros -->
     <div class="row">
       <div class="col-md-3">
@@ -48,59 +60,63 @@
       </div>
     </div>
 
-    <!-- Filtros Autocomplete -->
     <script>
-      // Función para filtrar por jefe, departamento o taller
-      $(function() {
-        $("#filterJefe").autocomplete({
-          source: function(request, response) {
-            var filtered = [];
-            dummyData.forEach(function(planta) {
-              planta.superintendentes.forEach(function(sup) {
-                if (sup.departamentos[0].jefe.toLowerCase().includes(request.term.toLowerCase())) {
-                  filtered.push(sup.departamentos[0].jefe);
+      // Función para obtener los datos únicos para el filtro
+      function getUniqueValues(data, key1, key2) {
+        var values = [];
+        data.forEach(function(planta) {
+          planta.superintendentes.forEach(function(sup) {
+            if (key2) {
+              sup.departamentos.forEach(function(dept) {
+                if (key1 && dept[key1]) {
+                  Object.keys(dept[key1]).forEach(function(taller) {
+                    if (!values.includes(taller)) values.push(taller);
+                  });
+                } else if (!values.includes(dept[key2])) {
+                  values.push(dept[key2]);
                 }
               });
-            });
-            response(filtered);
-          }
+            } else if (!values.includes(sup[key1])) {
+              values.push(sup[key1]);
+            }
+          });
         });
-        
-        $("#filterDepartamento").autocomplete({
+        return values;
+      }
+
+      $(function() {
+        // Filtrar por Jefe
+        $("#filterJefe").autocomplete({
           source: function(request, response) {
-            var filtered = [];
-            dummyData.forEach(function(planta) {
-              planta.superintendentes.forEach(function(sup) {
-                sup.departamentos.forEach(function(dept) {
-                  if (dept.nombre.toLowerCase().includes(request.term.toLowerCase())) {
-                    filtered.push(dept.nombre);
-                  }
-                });
-              });
-            });
-            response(filtered);
+            var filtered = getUniqueValues(dummyData, 'nombre');
+            response(filtered.filter(function(jefe) {
+              return jefe.toLowerCase().includes(request.term.toLowerCase());
+            }));
           }
         });
 
+        // Filtrar por Departamento
+        $("#filterDepartamento").autocomplete({
+          source: function(request, response) {
+            var filtered = getUniqueValues(dummyData, null, 'nombre');
+            response(filtered.filter(function(dept) {
+              return dept.toLowerCase().includes(request.term.toLowerCase());
+            }));
+          }
+        });
+
+        // Filtrar por Taller
         $("#filterTaller").autocomplete({
           source: function(request, response) {
-            var filtered = [];
-            dummyData.forEach(function(planta) {
-              planta.superintendentes.forEach(function(sup) {
-                sup.departamentos.forEach(function(dept) {
-                  Object.keys(dept.talleres).forEach(function(taller) {
-                    if (taller.toLowerCase().includes(request.term.toLowerCase())) {
-                      filtered.push(taller);
-                    }
-                  });
-                });
-              });
-            });
-            response(filtered);
+            var filtered = getUniqueValues(dummyData, 'talleres', null);
+            response(filtered.filter(function(taller) {
+              return taller.toLowerCase().includes(request.term.toLowerCase());
+            }));
           }
         });
       });
     </script>
+
     <br/>
     <!-- Tarjetas de Superintendentes -->
     <div id="superintendentesContainer" class="row"></div>
@@ -131,7 +147,7 @@
     function mostrarTarjetas() {
       var container = $("#superintendentesContainer");
       container.empty();
-      
+
       dummyData.forEach(function(planta) {
         planta.superintendentes.forEach(function(sup) {
           var card = $('<div class="col-md-4"></div>');
@@ -156,7 +172,7 @@
     function verModal(taller, superintendente) {
       var modalLista = $("#modalTallerLista");
       modalLista.empty();
-      
+
       dummyData.forEach(function(planta) {
         planta.superintendentes.forEach(function(sup) {
           if (sup.nombre === superintendente) {
@@ -167,13 +183,17 @@
           }
         });
       });
-      
+
       $('#modalTaller').modal('show');
     }
 
     $(document).ready(function() {
+      $(".menu-toggle").click(function(){
+        $(".mobile-menu").slideToggle();
+    });
+
       mostrarTarjetas();
-      
+
       // Mostrar menú para agregar
       $('#showMenu').click(function() {
         alert("Agregar Superintendente, Departamento o Taller");
