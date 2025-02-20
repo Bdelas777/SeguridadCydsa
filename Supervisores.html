@@ -85,10 +85,18 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+
     .superintendente-card {
       margin-bottom: 20px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+   
     }
     
     .departamento-item {
@@ -104,6 +112,12 @@
     }
     
     @media (max-width: 768px) {
+      
+    .row {
+      display: block;
+      flex-wrap: wrap;
+    }
+    
       .menu-toggle {
         display: block;
       }
@@ -496,11 +510,11 @@
         }
       });
       
-
+      const supOrdenados = Object.values(superintendentes);
       
-      Object.values(superintendentes).forEach(function(sup) {
+      supOrdenados.forEach(function(sup) {
         if (sup.departamentos.length > 0) {
-          const colDiv = $('<div class="col-md-6"></div>');
+          const colDiv = $('<div class="col-md-6 "></div>');
           const panelDiv = $('<div class="panel panel-primary superintendente-card"></div>');
           
           const headerDiv = $('<div class="panel-heading"></div>');
@@ -532,7 +546,7 @@
         }
       });
       
-      if (supOrdenados.length === 0 || !supOrdenados.some(sup => sup.departamentos.length > 0)) {
+      if (supOrdenados.length === 0) {
         container.append('<div class="col-xs-12 text-center"><h4>No se encontraron resultados con los filtros seleccionados</h4></div>');
       }
     }
