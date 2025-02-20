@@ -78,4 +78,22 @@
             font-size: 20px;
         }
         
+        .card {
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          }
+          
+          .card-body {
+            padding: 20px;
+          }
+          
+          .card-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+          }
+          
+          .card-text {
+            margin-bottom: 5px;
+          }
+          
     </style>

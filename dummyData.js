@@ -1,6 +1,6 @@
 const dummyData = [
     {
-        "planta": "IQ Coatza",
+        "planta": "Q010-01",
         "superintendentes": [
             {
                 "nombre": "Pedro Lopez",
@@ -47,7 +47,7 @@ const dummyData = [
         ]
     },
     {
-        "planta": "IQ NE",
+        "planta": "Q002-01",
         "superintendentes": [
             {
                 "nombre": "Miguel Pérez",

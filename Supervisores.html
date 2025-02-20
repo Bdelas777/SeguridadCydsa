@@ -40,7 +40,6 @@
     </div>
 
     <div class="row ">
-      <!-- Filtro Planta con Select -->
       <div class="col-xs-12 col-md-2">
           <select id="filterPlanta" class="form-control">
             <option value="Q002-01">IQ NE</option>
@@ -51,7 +50,6 @@
           </select>
       </div>
       
-      <!-- Filtros Autocompletar -->
       <div class="col-xs-12 col-md-2">
           <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
       </div>
@@ -107,75 +105,6 @@
             <p>Formulario para agregar Taller.</p>
         </div>
     </div>
-
-      <script>
-        // Función para obtener los datos únicos para el filtro
-        function getUniqueValues(data, key1, key2) {
-          var values = [];
-          data.forEach(function(planta) {
-            planta.superintendentes.forEach(function(sup) {
-              if (key2) {
-                sup.departamentos.forEach(function(dept) {
-                  if (key1 && dept[key1]) {
-                    Object.keys(dept[key1]).forEach(function(taller) {
-                      if (!values.includes(taller)) values.push(taller);
-                    });
-                  } else if (!values.includes(dept[key2])) {
-                    values.push(dept[key2]);
-                  }
-                });
-              } else if (!values.includes(sup[key1])) {
-                values.push(sup[key1]);
-              }
-            });
-          });
-          return values;
-        }
-
-        $(function() {
-          // Autocomplete para Superintendente
-          $("#filterSuperintendente").autocomplete({
-            source: function(request, response) {
-              var filtered = getUniqueValues(dummyData, 'nombre');
-              response(filtered.filter(function(sup) {
-                return sup.toLowerCase().includes(request.term.toLowerCase());
-              }));
-            }
-          });
-        
-          // Autocomplete para Jefe
-          $("#filterJefe").autocomplete({
-            source: function(request, response) {
-              var filtered = getUniqueValues(dummyData, null, 'nombre');
-              response(filtered.filter(function(jefe) {
-                return jefe.toLowerCase().includes(request.term.toLowerCase());
-              }));
-            }
-          });
-        
-          // Autocomplete para Departamento
-          $("#filterDepartamento").autocomplete({
-            source: function(request, response) {
-              var filtered = getUniqueValues(dummyData, null, 'nombre');
-              response(filtered.filter(function(dept) {
-                return dept.toLowerCase().includes(request.term.toLowerCase());
-              }));
-            }
-          });
-        
-          // Autocomplete para Taller
-          $("#filterTaller").autocomplete({
-            source: function(request, response) {
-              var filtered = getUniqueValues(dummyData, 'talleres', null);
-              response(filtered.filter(function(taller) {
-                return taller.toLowerCase().includes(request.term.toLowerCase());
-              }));
-            }
-          });
-        });
-        
-      </script>
-
       <br/>
       <!-- Tarjetas de Superintendentes -->
       <div id="superintendentesContainer" class="row"></div>
@@ -202,6 +131,106 @@
     </div>
 
     <script>
+      $(function() {
+        // Autocomplete para Superintendente
+        $("#filterSuperintendente").autocomplete({
+          source: function(request, response) {
+            var filtered = getUniqueValues(dummyData, 'nombre');
+            response(filtered.filter(function(sup) {
+              return sup.toLowerCase().includes(request.term.toLowerCase());
+            }));
+          }
+        });
+      
+        // Autocomplete para Jefe
+        $("#filterJefe").autocomplete({
+          source: function(request, response) {
+            var filtered = [];
+            dummyData.forEach(function(planta) {
+              planta.superintendentes.forEach(function(sup) {
+                sup.departamentos.forEach(function(dept) {
+                  if (dept.jefe && !filtered.includes(dept.jefe)) {
+                    filtered.push(dept.jefe);
+                  }
+                });
+              });
+            });
+            response(filtered.filter(function(jefe) {
+              return jefe.toLowerCase().includes(request.term.toLowerCase());
+            }));
+          }
+        });
+      
+        // Filtrar cuando hay input en los campos de filtro
+        $("#filterSuperintendente, #filterJefe, #filterPlanta").on("input", function() {
+          var superintendente = $("#filterSuperintendente").val().toLowerCase();
+          var jefe = $("#filterJefe").val().toLowerCase();
+          var planta = $("#filterPlanta").val().toLowerCase();
+      
+          var filteredData = [];
+          dummyData.forEach(function(plantaData) {
+            if (plantaData.planta.toLowerCase().includes(planta)) {
+              plantaData.superintendentes.forEach(function(sup) {
+                if (sup.nombre.toLowerCase().includes(superintendente)) {
+                  sup.departamentos.forEach(function(dept) {
+                    if (dept.jefe.toLowerCase().includes(jefe)) {
+                      filteredData.push({
+                        superintendente: sup.nombre,
+                        jefe: dept.jefe,
+                        departamento: dept.nombre,
+                        planta: plantaData.planta,
+                        talleres: dept.talleres
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+      
+          // Mostrar los resultados filtrados en el contenedor de tarjetas
+          displayFilteredResults(filteredData);
+        });
+      
+        // Función para mostrar los resultados filtrados en tarjetas
+        function displayFilteredResults(filteredData) {
+          var container = $("#superintendentesContainer");
+          container.empty();
+          
+          if (filteredData.length === 0) {
+            container.append('<p>No hay resultados</p>');
+          }
+      
+          filteredData.forEach(function(data) {
+            var talleresList = '';
+            Object.keys(data.talleres).forEach(function(taller) {
+              talleresList += `
+                <ul>
+                  <li><strong>${taller}:</strong> ${data.talleres[taller].join(', ')}</li>
+                </ul>
+              `;
+            });
+      
+            container.append(`
+              <div class="col-xs-12 col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">${data.superintendente}</h5>
+                    <p class="card-text"><strong>Planta:</strong> ${data.planta}</p>
+                    <p class="card-text"><strong>Jefe:</strong> ${data.jefe}</p>
+                    <p class="card-text"><strong>Departamento:</strong> ${data.departamento}</p>
+                    <p class="card-text"><strong>Talleres:</strong> ${talleresList}</p>
+                  </div>
+                </div>
+              </div>
+            `);
+          });
+        }
+      
+        // Iniciar mostrando todos los superintendentes al principio
+        displayFilteredResults([]);
+      });
+      
     const button = document.getElementById("showMenu");
           const menu = document.getElementById("dropdownMenu");
 
@@ -251,7 +280,6 @@
         });
       }
 
-      // Muestra el modal con los detalles de los talleres
       function verModal(taller, superintendente) {
         var modalLista = $("#modalTallerLista");
         modalLista.empty();
