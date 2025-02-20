@@ -42,23 +42,67 @@
     <!-- Filtros -->
     <div class="row">
       <div class="col-md-3">
-        <label for="filterJefe">Filtrar por Jefe:</label>
-        <input type="text" id="filterJefe" class="form-control">
+        <input type="text" id="filterPlanta" class="form-control" placeholder="Planta">
       </div>
       <div class="col-md-3">
-        <label for="filterDepartamento">Filtrar por Departamento:</label>
-        <input type="text" id="filterDepartamento" class="form-control">
+        <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
       </div>
       <div class="col-md-3">
-        <label for="filterTaller">Filtrar por Taller:</label>
-        <input type="text" id="filterTaller" class="form-control">
+        <input type="text" id="filterJefe" class="form-control" placeholder="Jefe">
       </div>
       <div class="col-md-3">
-        <button id="showMenu" class="btn btn-primary" style="margin-top: 25px;">
-          <i class="fa fa-plus"></i> Agregar
+        <input type="text" id="filterDepartamento" class="form-control" placeholder="Departamento">
+      </div>
+      <div class="col-md-3">
+        <input type="text" id="filterTaller" class="form-control" placeholder="Taller"> 
+      </div>
+
+       <div class="menu-container">
+        <button id="showMenu" class="btn">
+            <i class="fa fa-cog"></i> Opciones
         </button>
+
+        <ul class="dropdown-menu" id="dropdownMenu">
+            <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
+            <li><a onclick="openModal('departamentoModal')">Agregar Departamento</a></li>
+            <li><a onclick="openModal('jefeModal')">Agregar Jefe</a></li>
+            <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
+        </ul>
       </div>
+
     </div>
+
+    <div id="superintendenteModal" class="modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeModal('superintendenteModal')">&times;</span>
+          <h2>Agregar Superintendente</h2>
+          <p>Formulario para agregar Superintendente.</p>
+      </div>
+  </div>
+
+  <div id="departamentoModal" class="modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeModal('departamentoModal')">&times;</span>
+          <h2>Agregar Departamento</h2>
+          <p>Formulario para agregar Departamento.</p>
+      </div>
+  </div>
+
+  <div id="jefeModal" class="modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeModal('jefeModal')">&times;</span>
+          <h2>Agregar Jefe</h2>
+          <p>Formulario para agregar Jefe.</p>
+      </div>
+  </div>
+
+  <div id="tallerModal" class="modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeModal('tallerModal')">&times;</span>
+          <h2>Agregar Taller</h2>
+          <p>Formulario para agregar Taller.</p>
+      </div>
+  </div>
 
     <script>
       // Función para obtener los datos únicos para el filtro
@@ -143,7 +187,31 @@
   </div>
 
   <script>
-    // Muestra las tarjetas con la información
+  const button = document.getElementById("showMenu");
+        const menu = document.getElementById("dropdownMenu");
+
+        button.addEventListener("click", function (event) {
+            event.stopPropagation();
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        });
+
+
+        document.addEventListener("click", function (event) {
+            if (!menu.contains(event.target) && event.target !== button) {
+                menu.style.display = "none";
+            }
+        });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex";
+            menu.style.display = "none"; 
+        }
+
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+ 
     function mostrarTarjetas() {
       var container = $("#superintendentesContainer");
       container.empty();
@@ -168,7 +236,6 @@
       });
     }
 
-    // Muestra el modal con los detalles de los talleres
     function verModal(taller, superintendente) {
       var modalLista = $("#modalTallerLista");
       modalLista.empty();
@@ -194,10 +261,7 @@
 
       mostrarTarjetas();
 
-      // Mostrar menú para agregar
-      $('#showMenu').click(function() {
-        alert("Agregar Superintendente, Departamento o Taller");
-      });
+      
     });
   </script>
 </body>
