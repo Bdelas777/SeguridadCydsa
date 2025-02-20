@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal de Servicios</title>
+    <!-- E4GL Disabled: meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+    <script src="dummyData.js"></script>
+    <style>
+       
+        .menu-icon {
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .li-styles {
+            width: 100%;
+            display: inline-flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
+            border-bottom: solid 1px;
+        }
+        .rounded-0{
+            border-radius: 0px;
+        }
+        #msup {
+            z-index: 1040;
+        }
+        #modbus {
+            z-index: 1050;
+        }
+        .d-block {
+            display: block;
+        }
+        .t-left {
+            text-align: left;
+        }
+        .ulpadding {
+            padding-left: 15px;
+        }
+        .modal-backdrop+.modal-backdrop {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div>
+            <!-- Menú con icono -->
+            <span class="menu-icon fa fa-bars" data-toggle="modal" data-target="#menuModal"></span>
+        </div>
+        <br>
+        <div class="row" align="left">
+            <ul class="nav nav-tabs" id="lista">
+                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
+            </ul>
+        </div>
+        <br>
+    </div>
+    <input type="hidden" name="ppasstmp" id="token" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+    <div align="center">
+        <form class="form-inline" id="fadmin">
+            <input type="hidden" name="ppasstmp" id="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+            <!-- Filtros adicionales -->
+            <div class="form-group">
+                <label class="control-label">Planta</label>
+                <select class="form-control" name="cbosoc" id="cbosoc" onchange="suptes()">
+                    <option value="Q002-01">IQ NE</option>
+                    <option value="Q010-01" SELECTED>IQ COATZA</option>
+                    <option value="Q010-02">IQ TX</option>
+                    <option value="Q010-03">IQ HM</option>
+                    <option value="Q083-01">IQ SC</option>
+                </select>
+            </div>
+            <!-- Superintendentes -->
+            <div class="form-group">
+                <label class="control-label">Superintendente</label>
+                <select class="form-control" name="cbosupte" id="cbosupte">
+                    <option value="0">TODOS</option>
+                    <option value="111010081">ELIAS SANTIAGO ARTEAGA</option>
+                    <option value="11101215">LAZARO DE LA CRUZ GARCIA LOPEZ</option>
+                    <!-- Agregar más opciones según sea necesario -->
+                </select>
+            </div>
+            <!-- Filtros para jefe, departamento y taller -->
+            <div class="form-group">
+                <label class="control-label">Jefe</label>
+                <select class="form-control" name="jefe" id="jefe">
+                    <option value="0">TODOS</option>
+                    <option value="1">Jefe 1</option>
+                    <option value="2">Jefe 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Departamento</label>
+                <select class="form-control" name="depto" id="depto">
+                    <option value="0">TODOS</option>
+                    <option value="Depto 1">Depto 1</option>
+                    <option value="Depto 2">Depto 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Taller</label>
+                <select class="form-control" name="taller" id="taller">
+                    <option value="0">TODOS</option>
+                    <option value="Taller 1">Taller 1</option>
+                    <option value="Taller 2">Taller 2</option>
+                </select>
+            </div>
+            <!-- Botón de búsqueda -->
+            <acronym title="Buscar">
+                <button type="button" class="btn btn-success" onclick="buscar()">
+                    <span class="fa fa-search"></span>
+                </button>
+            </acronym>
+        </form>
+    </div>
+    <br>
+    <div class="container-fluid" id="cont" style="overflow-x:auto;">
+    </div>
+
+    <!-- Modal de menú con tres opciones -->
+    <div class="modal fade" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span class="fa fa-times"></span>
+                    </button>
+                    <h5 class="modal-title" id="menuModalLabel">Opciones</h5>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        <li><a href="#">Opción 1</a></li>
+                        <li><a href="#">Opción 2</a></li>
+                        <li><a href="#">Opción 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const ppasstmp = $("#token").val();
+        $(document).ready(function () {
+            buscar();
+        });
+         
+       
+       function suptes() {
+        const selectedPlanta = $("#cbosoc").val();
+        const planta = dummyData.find(p => p.planta === (selectedPlanta === "Q010-01" ? "IQ Coatza" : "IQ TX"));
+        
+        // Clear and rebuild superintendente select
+        $("#cbosupte").empty();
+        $("#cbosupte").append('<option value="0">TODOS</option>');
+        
+        if (planta) {
+            planta.superintendentes.forEach(supte => {
+                $("#cbosupte").append(`<option value="${supte.nombre}">${supte.nombre}</option>`);
+            });
+        }
+        
+        buscar();
+    }
+    
+    function buscar() {
+        $('#cont').html('<center> <i class="fa fa-spinner fa-pulse fa-3x"></i></center>');
+        
+        const selectedPlanta = $("#cbosoc").val();
+        const selectedSupte = $("#cbosupte").val();
+        
+        const planta = dummyData.find(p => p.planta === (selectedPlanta === "Q010-01" ? "IQ Coatza" : "IQ TX"));
+        
+        if (!planta) {
+            $('#cont').html('<div class="alert alert-warning">No se encontraron datos para esta planta</div>');
+            return;
+        }
+        
+        let tableHTML = `
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Superintendente</th>
+                            <th>Departamento</th>
+                            <th>Áreas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        planta.superintendentes.forEach(supte => {
+            if (selectedSupte === "0" || selectedSupte === supte.nombre) {
+                supte.departamentos.forEach(depto => {
+                    tableHTML += `
+                        <tr>
+                            <td>${supte.nombre}</td>
+                            <td>
+                                ${depto.nombre}<br>
+                                JEFE:<br>
+                                ${depto.jefe}
+                                <button class="btn btn-success btn-xs" 
+                                    onclick="mSup(this)" 
+                                    data-dep="${depto.nombre}" 
+                                    data-ddep="${depto.nombre}">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </td>
+                            <td>
+                    `;
+                    
+                    Object.entries(depto.talleres).forEach(([taller, empleados]) => {
+                        tableHTML += `
+                            <div class="li-styles" id="li${taller}${supte.nombre.replace(/\s/g, '')}">
+                                ${taller}
+                                <button class="btn btn-danger btn-xs" 
+                                    onclick="mDel(this)" 
+                                    data-sup="${supte.nombre}" 
+                                    data-dep="${depto.nombre}" 
+                                    data-area="${taller}">
+                                    <span class="fa fa-times"></span>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    
+                    tableHTML += `</td></tr>`;
+                });
+            }
+        });
+        
+        tableHTML += `</tbody></table></div>`;
+        $('#cont').html(tableHTML);
+    }
+    
+    function mSup(dep) {
+        $("#fsup").trigger("reset");
+        const depto = $(dep).data("dep");
+        const ddep = $(dep).data("ddep");
+        const soc = $("#cbosoc").val();
+        
+        $("#soc").val(soc);
+        $("#depto").val(depto);
+        $("#dvidsup").removeClass("has-error");
+        $("#dvnombre").removeClass("has-error");
+        $("#divusurespinfo").hide();
+        $("#modal-title").html("<strong>NUEVO SUPERVISOR " + ddep.toUpperCase() + "</strong>");
+
+        const areasHTML = `
+            <label class="control-label">Áreas</label>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" onclick="marcar_todas(this)"> Seleccionar Todo
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="area1"> Área 1
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="area2"> Área 2
+                </label>
+            </div>
+        `;
+        
+        $("#dvareas").html(areasHTML);
+        $("#msup").modal('show');
+    }
+    
+    function addSup() {
+        if (validarsup()) {
+            $("#msup").modal('hide');
+            $("#aviso").modal("show");
+            
+            // Simulate adding supervisor
+            setTimeout(() => {
+                $("#aviso").modal("hide");
+                buscar();
+            }, 1000);
+        }
+    }
+    
+    function mDel(sup) {
+        const idsup = $(sup).data("sup");
+        const iddep = $(sup).data("dep");
+        const area = $(sup).data("area");
+        
+        $("#delsup").val(idsup);
+        $("#deldepto").val(iddep);
+        $("#delarea").val(area);
+        $("#mdel").modal("show");
+    }
+    
+    function eliminar() {
+        const area = $("#delarea").val();
+        const sup = $("#delsup").val();
+        
+        $(`#li${area}${sup.replace(/\s/g, '')}`).remove();
+        $("#mdel").modal('hide');
+    }
+        function validarsup() {
+            var nom = false;
+            var sup = false;
+            var area = false;
+            if (!$("#idsup").val()) {
+                nom = false;
+                $("#dvidsup").addClass("has-error");
+            } else {
+                $("#dvidsup").removeClass("has-error");
+                nom = true;
+            }
+            if (!$("#nombre").val() || !$("#idsup").val()) {
+                sup = false;
+                $("#divusurespinfo").show();
+                $("#dvidsup").addClass("has-error");
+                $("#dvnombre").addClass("has-error");
+            } else {
+                $("#divusurespinfo").hide();
+                $("#dvidsup").addClass("has-error");
+                $("#dvnombre").removeClass("has-error");
+                sup = true;
+            }
+            var areas = document.querySelectorAll('#fsup input[type=checkbox]:checked');
+            if (areas.length <= 0) {
+                area = false;
+                $("#dvareas").addClass("has-error");
+            } else {
+                $("#dvareas").removeClass("has-error");
+                area = true;
+            }
+            return nom && sup && area;
+        }
+        $("#btnbus").click(function () {
+            if ($("#nombre").val() == "") {
+                alert("Por favor introducir nombre");
+                $("#nombre").focus();
+            } else {
+                $("#idsup").val("");
+                $('#modbus').modal("show");
+                listusuarios();
+            }
+        });
+        function listusuarios() {
+            var usu = $("#nombre").val();
+            var soc = $("#cbosoc").val();
+            var ppasstmp = $("#token").val();
+            var url = "segindadmgrl100e.r";
+            $.ajax({
+                url: url,
+                data: {
+                    ppasstmp: ppasstmp,
+                    soc: soc,
+                    idsup: usu
+                },
+                success: function (result) {
+                    $("#descusu").html(usu);
+                    $("#listusu").html($(result).filter('#res').html());
+                }
+            });
+        }
+        function selsup(jusu, jdusu, correo) {
+            $('#nombre').val(jdusu);
+            $('#idsup').val(jusu);
+            $('#correo').val(correo);
+            $('#modbus').modal('hide');
+        }
+        $(".modal-second-level").on('hidden.bs.modal', function () {
+            $("body").addClass("modal-open");
+        });
+    </script>
+</body>

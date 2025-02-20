@@ -46,5 +46,52 @@ const dummyData = [
                 ]
             }
         ]
+    },
+    {
+        "planta": "IQ NE",
+        "superintendentes": [
+            {
+                "nombre": "Miguel Pérez",
+                "departamentos": [
+                    {
+                        "nombre": "Producción",
+                        "jefe": "Antonio Sánchez",
+                        "talleres": {
+                            "Taller I": ["I1", "I2"],
+                            "Taller J": ["J1", "J2"]
+                        }
+                    },
+                    {
+                        "nombre": "Calidad",
+                        "jefe": "Elena Ruiz",
+                        "talleres": {
+                            "Taller K": ["K1", "K2"],
+                            "Taller L": ["L1", "L2"]
+                        }
+                    }
+                ]
+            },
+            {
+                "nombre": "Luis González",
+                "departamentos": [
+                    {
+                        "nombre": "Mantenimiento",
+                        "jefe": "Juan Carlos Méndez",
+                        "talleres": {
+                            "Taller M": ["M1", "M2"],
+                            "Taller N": ["N1", "N2"]
+                        }
+                    },
+                    {
+                        "nombre": "Logística",
+                        "jefe": "Paola Hernández",
+                        "talleres": {
+                            "Taller O": ["O1", "O2"],
+                            "Taller P": ["P1", "P2"]
+                        }
+                    }
+                ]
+            }
+        ]
     }
 ];
