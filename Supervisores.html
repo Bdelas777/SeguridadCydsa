@@ -1,265 +1,284 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal de Servicios</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
-  <script src="dummyData.js"></script>
-  <link rel="stylesheet" href="navbar.css">  
-</head>
-<body>
-  <div class="container">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Servicios</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+    <script src="dummyData.js"></script>
+    <link rel="stylesheet" href="navbar.css">  
+  </head>
+  <body>
     <div class="container">
-      
-      <div class="row space-nav" align="left" >
-          <ul class="nav nav-tabs" id="lista">
-              <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
-              <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
-              <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
-              <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
-              <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
-          </ul>
-      </div>
+      <div class="container">
+        
+        <div class="row space-nav" align="left" >
+            <ul class="nav nav-tabs" id="lista">
+                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
+            </ul>
+        </div>
 
-      <div class="menu-toggle ">☰ Menú</div>
-      
-      <div class="mobile-menu">
-          <a href="/Supervisores.html">SUPERVISORES</a>
-          <a href="/Inspectores.html">INSPECTORES</a>
-          <a href="/Puestos.html">PUESTOS</a>
-          <a href="/Formatos.html">FORMATOS DE INSP.</a>
-          <a href="/Rubros.html">RUBROS</a>
-      </div>
-  </div>
+        <div class="menu-toggle ">☰ Menú</div>
+        
+        <div class="mobile-menu">
+            <a href="/Supervisores.html">SUPERVISORES</a>
+            <a href="/Inspectores.html">INSPECTORES</a>
+            <a href="/Puestos.html">PUESTOS</a>
+            <a href="/Formatos.html">FORMATOS DE INSP.</a>
+            <a href="/Rubros.html">RUBROS</a>
+        </div>
+    </div>
 
-    <!-- Filtros -->
     <div class="row ">
-      <div class="col-xs-12 col-md-2  ">
-          <input type="text" id="filterPlanta" class="form-control " placeholder="Planta">
+      <!-- Filtro Planta con Select -->
+      <div class="col-xs-12 col-md-2">
+          <select id="filterPlanta" class="form-control">
+            <option value="Q002-01">IQ NE</option>
+            <option value="Q010-01" selected>IQ COATZA</option>
+            <option value="Q010-02">IQ TX</option>
+            <option value="Q010-03">IQ HM</option>
+            <option value="Q083-01">IQ SC</option>
+          </select>
       </div>
-      <div class="col-xs-12 col-md-2 ">
+      
+      <!-- Filtros Autocompletar -->
+      <div class="col-xs-12 col-md-2">
           <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
       </div>
-      <div class="col-xs-12 col-md-2 ">
+      <div class="col-xs-12 col-md-2">
           <input type="text" id="filterJefe" class="form-control" placeholder="Jefe">
       </div>
-      <div class="col-xs-12 col-md-2 ">
+      <div class="col-xs-12 col-md-2">
           <input type="text" id="filterDepartamento" class="form-control" placeholder="Departamento">
       </div>
-      <div class="col-xs-12 col-md-2 ">
+      <div class="col-xs-12 col-md-2">
           <input type="text" id="filterTaller" class="form-control" placeholder="Taller"> 
       </div>
-  
-      <div class="col-xs-12 col-md-2  text-center">
-          <div class="menu-container">
-              <button id="showMenu" class="btn btn-block">
-                  <i class="fa fa-cog"></i> Opciones
-              </button>
-  
-              <ul class="dropdown-menu" id="dropdownMenu">
-                  <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
-                  <li><a onclick="openModal('departamentoModal')">Agregar Departamento y Jefe</a></li>
-                  <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
-              </ul>
-          </div>
-      </div>
-  </div>
-  
-  
+    
+        <div class="col-xs-12 col-md-2  text-center">
+            <div class="menu-container">
+                <button id="showMenu" class="btn btn-block">
+                    <i class="fa fa-cog"></i> Opciones
+                </button>
+    
+                <ul class="dropdown-menu" id="dropdownMenu">
+                    <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
+                    <li><a onclick="openModal('departamentoModal')">Agregar Departamento y Jefe</a></li>
+                    <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    
 
-    <div id="superintendenteModal" class="modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeModal('superintendenteModal')">&times;</span>
-          <h2>Agregar Superintendente</h2>
-          <p>Formulario para agregar Superintendente.</p>
-      </div>
-  </div>
+      <div id="superintendenteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('superintendenteModal')">&times;</span>
+            <h2>Agregar Superintendente</h2>
+            <p>Formulario para agregar Superintendente.</p>
+        </div>
+    </div>
 
-  <div id="departamentoModal" class="modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeModal('departamentoModal')">&times;</span>
-          <h2>Agregar Departamento y jefe</h2>
-          <p>Formulario para agregar Departamento.</p>
-      </div>
-  </div>
+    <div id="departamentoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('departamentoModal')">&times;</span>
+            <h2>Agregar Departamento y jefe</h2>
+            <p>Formulario para agregar Departamento.</p>
+        </div>
+    </div>
 
 
 
-  <div id="tallerModal" class="modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeModal('tallerModal')">&times;</span>
-          <h2>Agregar Taller</h2>
-          <p>Formulario para agregar Taller.</p>
-      </div>
-  </div>
+    <div id="tallerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('tallerModal')">&times;</span>
+            <h2>Agregar Taller</h2>
+            <p>Formulario para agregar Taller.</p>
+        </div>
+    </div>
 
-    <script>
-      // Función para obtener los datos únicos para el filtro
-      function getUniqueValues(data, key1, key2) {
-        var values = [];
-        data.forEach(function(planta) {
-          planta.superintendentes.forEach(function(sup) {
-            if (key2) {
-              sup.departamentos.forEach(function(dept) {
-                if (key1 && dept[key1]) {
-                  Object.keys(dept[key1]).forEach(function(taller) {
-                    if (!values.includes(taller)) values.push(taller);
-                  });
-                } else if (!values.includes(dept[key2])) {
-                  values.push(dept[key2]);
-                }
-              });
-            } else if (!values.includes(sup[key1])) {
-              values.push(sup[key1]);
+      <script>
+        // Función para obtener los datos únicos para el filtro
+        function getUniqueValues(data, key1, key2) {
+          var values = [];
+          data.forEach(function(planta) {
+            planta.superintendentes.forEach(function(sup) {
+              if (key2) {
+                sup.departamentos.forEach(function(dept) {
+                  if (key1 && dept[key1]) {
+                    Object.keys(dept[key1]).forEach(function(taller) {
+                      if (!values.includes(taller)) values.push(taller);
+                    });
+                  } else if (!values.includes(dept[key2])) {
+                    values.push(dept[key2]);
+                  }
+                });
+              } else if (!values.includes(sup[key1])) {
+                values.push(sup[key1]);
+              }
+            });
+          });
+          return values;
+        }
+
+        $(function() {
+          // Autocomplete para Superintendente
+          $("#filterSuperintendente").autocomplete({
+            source: function(request, response) {
+              var filtered = getUniqueValues(dummyData, 'nombre');
+              response(filtered.filter(function(sup) {
+                return sup.toLowerCase().includes(request.term.toLowerCase());
+              }));
+            }
+          });
+        
+          // Autocomplete para Jefe
+          $("#filterJefe").autocomplete({
+            source: function(request, response) {
+              var filtered = getUniqueValues(dummyData, null, 'nombre');
+              response(filtered.filter(function(jefe) {
+                return jefe.toLowerCase().includes(request.term.toLowerCase());
+              }));
+            }
+          });
+        
+          // Autocomplete para Departamento
+          $("#filterDepartamento").autocomplete({
+            source: function(request, response) {
+              var filtered = getUniqueValues(dummyData, null, 'nombre');
+              response(filtered.filter(function(dept) {
+                return dept.toLowerCase().includes(request.term.toLowerCase());
+              }));
+            }
+          });
+        
+          // Autocomplete para Taller
+          $("#filterTaller").autocomplete({
+            source: function(request, response) {
+              var filtered = getUniqueValues(dummyData, 'talleres', null);
+              response(filtered.filter(function(taller) {
+                return taller.toLowerCase().includes(request.term.toLowerCase());
+              }));
             }
           });
         });
-        return values;
-      }
+        
+      </script>
 
-      $(function() {
-        // Filtrar por Jefe
-        $("#filterJefe").autocomplete({
-          source: function(request, response) {
-            var filtered = getUniqueValues(dummyData, 'nombre');
-            response(filtered.filter(function(jefe) {
-              return jefe.toLowerCase().includes(request.term.toLowerCase());
-            }));
-          }
-        });
+      <br/>
+      <!-- Tarjetas de Superintendentes -->
+      <div id="superintendentesContainer" class="row"></div>
+    </div>
 
-        // Filtrar por Departamento
-        $("#filterDepartamento").autocomplete({
-          source: function(request, response) {
-            var filtered = getUniqueValues(dummyData, null, 'nombre');
-            response(filtered.filter(function(dept) {
-              return dept.toLowerCase().includes(request.term.toLowerCase());
-            }));
-          }
-        });
-
-        // Filtrar por Taller
-        $("#filterTaller").autocomplete({
-          source: function(request, response) {
-            var filtered = getUniqueValues(dummyData, 'talleres', null);
-            response(filtered.filter(function(taller) {
-              return taller.toLowerCase().includes(request.term.toLowerCase());
-            }));
-          }
-        });
-      });
-    </script>
-
-    <br/>
-    <!-- Tarjetas de Superintendentes -->
-    <div id="superintendentesContainer" class="row"></div>
-  </div>
-
-  <!-- Modal de Talleres -->
-  <div id="modalTaller" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Lista de Personas en Taller</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <ul id="modalTallerLista"></ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    <!-- Modal de Talleres -->
+    <div id="modalTaller" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Lista de Personas en Taller</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul id="modalTallerLista"></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-  const button = document.getElementById("showMenu");
-        const menu = document.getElementById("dropdownMenu");
+    <script>
+    const button = document.getElementById("showMenu");
+          const menu = document.getElementById("dropdownMenu");
 
-        button.addEventListener("click", function (event) {
-            event.stopPropagation();
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
-        });
-
-
-        document.addEventListener("click", function (event) {
-            if (!menu.contains(event.target) && event.target !== button) {
-                menu.style.display = "none";
-            }
-        });
-
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = "flex";
-            menu.style.display = "none"; 
-        }
+          button.addEventListener("click", function (event) {
+              event.stopPropagation();
+              menu.style.display = menu.style.display === "block" ? "none" : "block";
+          });
 
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = "none";
-        }
- 
-    function mostrarTarjetas() {
-      var container = $("#superintendentesContainer");
-      container.empty();
+          document.addEventListener("click", function (event) {
+              if (!menu.contains(event.target) && event.target !== button) {
+                  menu.style.display = "none";
+              }
+          });
 
-      dummyData.forEach(function(planta) {
-        planta.superintendentes.forEach(function(sup) {
-          var card = $('<div class="col-md-4"></div>');
-          var cardContent = `
-            <div class="panel panel-default">
-              <div class="panel-heading">${sup.nombre}</div>
-              <div class="panel-body">
-                <strong>Departamento:</strong> ${sup.departamentos[0].nombre} <br>
-                <strong>Jefe:</strong> ${sup.departamentos[0].jefe} <br>
-                <strong>Taller:</strong> ${Object.keys(sup.departamentos[0].talleres)[0]} <br>
-                <button class="btn btn-info btn-sm" onclick="verModal('${Object.keys(sup.departamentos[0].talleres)[0]}', '${sup.nombre}')">Ver Taller</button>
-              </div>
-            </div>
-          `;
-          card.html(cardContent);
-          container.append(card);
-        });
-      });
-    }
-
-    // Muestra el modal con los detalles de los talleres
-    function verModal(taller, superintendente) {
-      var modalLista = $("#modalTallerLista");
-      modalLista.empty();
-
-      dummyData.forEach(function(planta) {
-        planta.superintendentes.forEach(function(sup) {
-          if (sup.nombre === superintendente) {
-            var personas = sup.departamentos[0].talleres[taller];
-            personas.forEach(function(persona) {
-              modalLista.append('<li>' + persona + '</li>');
-            });
+          function openModal(modalId) {
+              document.getElementById(modalId).style.display = "flex";
+              menu.style.display = "none"; 
           }
+
+
+          function closeModal(modalId) {
+              document.getElementById(modalId).style.display = "none";
+          }
+  
+      function mostrarTarjetas() {
+        var container = $("#superintendentesContainer");
+        container.empty();
+
+        dummyData.forEach(function(planta) {
+          planta.superintendentes.forEach(function(sup) {
+            var card = $('<div class="col-md-4"></div>');
+            var cardContent = `
+              <div class="panel panel-default">
+                <div class="panel-heading">${sup.nombre}</div>
+                <div class="panel-body">
+                  <strong>Departamento:</strong> ${sup.departamentos[0].nombre} <br>
+                  <strong>Jefe:</strong> ${sup.departamentos[0].jefe} <br>
+                  <strong>Taller:</strong> ${Object.keys(sup.departamentos[0].talleres)[0]} <br>
+                  <button class="btn btn-info btn-sm" onclick="verModal('${Object.keys(sup.departamentos[0].talleres)[0]}', '${sup.nombre}')">Ver Taller</button>
+                </div>
+              </div>
+            `;
+            card.html(cardContent);
+            container.append(card);
+          });
         });
+      }
+
+      // Muestra el modal con los detalles de los talleres
+      function verModal(taller, superintendente) {
+        var modalLista = $("#modalTallerLista");
+        modalLista.empty();
+
+        dummyData.forEach(function(planta) {
+          planta.superintendentes.forEach(function(sup) {
+            if (sup.nombre === superintendente) {
+              var personas = sup.departamentos[0].talleres[taller];
+              personas.forEach(function(persona) {
+                modalLista.append('<li>' + persona + '</li>');
+              });
+            }
+          });
+        });
+
+        $('#modalTaller').modal('show');
+      }
+
+      $(document).ready(function() {
+        $(".menu-toggle").click(function(){
+          $(".mobile-menu").slideToggle();
       });
 
-      $('#modalTaller').modal('show');
-    }
+        mostrarTarjetas();
 
-    $(document).ready(function() {
-      $(".menu-toggle").click(function(){
-        $(".mobile-menu").slideToggle();
-    });
-
-      mostrarTarjetas();
-
-      
-    });
-  </script>
-</body>
+        
+      });
+    </script>
+  </body>
 </html>
