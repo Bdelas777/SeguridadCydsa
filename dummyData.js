@@ -1,96 +1,77 @@
 const dummyData = [
     {
-        "planta": "Q010-01",
-        "superintendentes": [
+      planta: "Q002-01",
+      superintendentes: [
+        {
+          nombre: "Juan Pérez",
+          departamentos: [
             {
-                "nombre": "Pedro Lopez",
-                "departamentos": [
-                    {
-                        "nombre": "Producción",
-                        "jefe": "Carlos Mendoza",
-                        "talleres": {
-                            "Taller A": ["A1", "A2"],
-                            "Taller B": ["B1", "B2"]
-                        }
-                    },
-                    {
-                        "nombre": "Calidad",
-                        "jefe": "Laura Gómez",
-                        "talleres": {
-                            "Taller C": ["C1", "C2"],
-                            "Taller D": ["D1", "D2"]
-                        }
-                    }
-                ]
+              nombre: "Mantenimiento",
+              jefe: "Miguel Sánchez",
+              talleres: {
+                "Taller Mecánico": ["Ana López", "José Rodríguez", "Luis Silva"],
+                "Taller Eléctrico": ["Carlos Gómez", "Daniel Reyes"]
+              }
             },
             {
-                "nombre": "Ana Torres",
-                "departamentos": [
-                    {
-                        "nombre": "Mantenimiento",
-                        "jefe": "Ricardo López",
-                        "talleres": {
-                            "Taller E": ["E1", "E2"],
-                            "Taller F": ["F1", "F2"]
-                        }
-                    },
-                    {
-                        "nombre": "Logística",
-                        "jefe": "Sofía Martínez",
-                        "talleres": {
-                            "Taller G": ["G1", "G2"],
-                            "Taller H": ["H1", "H2"]
-                        }
-                    }
-                ]
+              nombre: "Seguridad",
+              jefe: "Juan Perez",
+              talleres: {
+                "Taller 1": ["Ana López", "José Rodríguez", "Luis Silva"],
+                "Taller 2": ["Carlos Gómez", "Daniel Reyes"]
+              }
+            },
+          ]
+        },
+        {
+          nombre: "Pedro López",
+          departamentos: [
+            {
+              nombre: "Producción",
+              jefe: "Roberto Martínez",
+              talleres: {
+                "Línea 1": ["Eduardo Torres", "Fernando Ruiz"],
+                "Línea 2": ["Gloria Vega", "Héctor Morales"]
+              }
             }
-        ]
+          ]
+        }
+      ]
     },
     {
-        "planta": "Q002-01",
-        "superintendentes": [
+      planta: "Q010-01",
+      superintendentes: [
+        {
+          nombre: "María González",
+          departamentos: [
             {
-                "nombre": "Miguel Pérez",
-                "departamentos": [
-                    {
-                        "nombre": "Producción",
-                        "jefe": "Antonio Sánchez",
-                        "talleres": {
-                            "Taller I": ["I1", "I2"],
-                            "Taller J": ["J1", "J2"]
-                        }
-                    },
-                    {
-                        "nombre": "Calidad",
-                        "jefe": "Elena Ruiz",
-                        "talleres": {
-                            "Taller K": ["K1", "K2"],
-                            "Taller L": ["L1", "L2"]
-                        }
-                    }
-                ]
-            },
-            {
-                "nombre": "Luis González",
-                "departamentos": [
-                    {
-                        "nombre": "Mantenimiento",
-                        "jefe": "Juan Carlos Méndez",
-                        "talleres": {
-                            "Taller M": ["M1", "M2"],
-                            "Taller N": ["N1", "N2"]
-                        }
-                    },
-                    {
-                        "nombre": "Logística",
-                        "jefe": "Paola Hernández",
-                        "talleres": {
-                            "Taller O": ["O1", "O2"],
-                            "Taller P": ["P1", "P2"]
-                        }
-                    }
-                ]
+              nombre: "Calidad",
+              jefe: "Laura Díaz",
+              talleres: {
+                "Laboratorio": ["Ignacio Ramos", "Juana Ortiz"],
+                "Inspección": ["Karla Mendoza", "Lorenzo Jiménez"]
+              }
             }
-        ]
+          ]
+        }
+      ]
+    },
+    {
+      planta: "Q010-02",
+      superintendentes: [
+        {
+          nombre: "Carlos Rodríguez",
+          departamentos: [
+            {
+              nombre: "Seguridad",
+              jefe: "Norma Vargas",
+              talleres: {
+                "Brigada A": ["Óscar Medina", "Patricia Castro"],
+                "Brigada B": ["Quintín Paredes", "Raúl Guerrero"]
+              }
+            }
+          ]
+        }
+      ]
     }
-];
+  ];

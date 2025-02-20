@@ -1,104 +1,104 @@
+<style>
+.mobile-menu {
+  display: none;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+.mobile-menu a {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #337ab7;
+  border-bottom: 1px solid #ddd;
+}
 
-        .menu-container {
-            position: relative;
-            display: inline-block;
-        }
+.mobile-menu a:last-child {
+  border-bottom: none;
+}
 
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: white;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            list-style: none;
-            padding: 10px;
-            width: 200px;
-            z-index: 100;
-        }
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f8f8f8;
+  text-align: center;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
 
-        .dropdown-menu a {
-            display: block;
-            padding: 8px 12px;
-            text-decoration: none;
-            color: black;
-            border-radius: 3px;
-            cursor: pointer;
-        }
+.menu-container {
+  position: relative;
+}
 
-        .dropdown-menu a:hover {
-            background: #007bff;
-            color: white;
-        }
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
 
-        .btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-top: 10px;
-        }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+}
 
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+}
 
-        .btn i {
-            margin-right: 5px;
-        }
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
+.superintendente-card {
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-        .modal-title{
-            text-align: center;
-            font-size: 14px;
-        }
+.departamento-item {
+  padding: 10px 15px;
+  border-top: 1px solid #ddd;
+}
 
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            width: 300px;
-            text-align: center;
-        }
+.taller-badge {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
 
-        .close {
-            cursor: pointer;
-            color: red;
-            font-size: 20px;
-        }
-        
-        .card {
-            margin: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          }
-          
-          .card-body {
-            padding: 20px;
-          }
-          
-          .card-title {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-          }
-          
-          .card-text {
-            margin-bottom: 5px;
-          }
-          
-    </style>
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+  
+  .space-nav {
+    display: none;
+  }
+  
+  .filter-group {
+    margin-bottom: 10px;
+  }
+}
+</style>

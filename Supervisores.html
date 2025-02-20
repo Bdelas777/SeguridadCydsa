@@ -1,282 +1,591 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Servicios</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
-    <script src="dummyData.js"></script>
-    <link rel="stylesheet" href="navbar.css">  
-  </head>
-  <body>
-    <div class="container">
-      <div class="container">
-        
-        <div class="row space-nav" align="left" >
-            <ul class="nav nav-tabs" id="lista">
-                <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
-                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
-                <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
-                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
-                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
-            </ul>
-        </div>
-
-        <div class="menu-toggle ">☰ Menú</div>
-        
-        <div class="mobile-menu">
-            <a href="/Supervisores.html">SUPERVISORES</a>
-            <a href="/Inspectores.html">INSPECTORES</a>
-            <a href="/Puestos.html">PUESTOS</a>
-            <a href="/Formatos.html">FORMATOS DE INSP.</a>
-            <a href="/Rubros.html">RUBROS</a>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Servicios - Superintendentes</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="dummyData.js"></script>
+  <link rel="stylesheet" href="super.css">  
+  <style>
+    .mobile-menu {
+      display: none;
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .mobile-menu a {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #337ab7;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+    
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+      padding: 10px;
+      background-color: #f8f8f8;
+      text-align: center;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .menu-container {
+      position: relative;
+    }
+    
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1050;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      position: relative;
+    }
+    
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .superintendente-card {
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .departamento-item {
+      padding: 10px 15px;
+      border-top: 1px solid #ddd;
+    }
+    
+    .taller-badge {
+      margin-right: 5px;
+      margin-bottom: 5px;
+      display: inline-block;
+      padding: 10px 10px; 
+    }
+    
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      
+      .space-nav {
+        display: none;
+      }
+      
+      .filter-group {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row space-nav" align="left">
+      <ul class="nav nav-tabs" id="lista">
+        <li role="presentation" class="active"><a href="/Supervisores.html">SUPERVISORES</a></li>
+        <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+        <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
+        <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+        <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
+      </ul>
     </div>
 
-    <div class="row ">
-      <div class="col-xs-12 col-md-2">
-          <select id="filterPlanta" class="form-control">
-            <option value="" selected>Todos</option>
-            <option value="Q002-01">IQ NE</option>
-            <option value="Q010-01" >IQ COATZA</option>
-            <option value="Q010-02">IQ TX</option>
-            <option value="Q010-03">IQ HM</option>
-            <option value="Q083-01">IQ SC</option>
-          </select>
+    <div class="menu-toggle">☰ Menú</div>
+    
+    <div class="mobile-menu">
+      <a href="/Supervisores.html">SUPERVISORES</a>
+      <a href="/Inspectores.html">INSPECTORES</a>
+      <a href="/Puestos.html">PUESTOS</a>
+      <a href="/Formatos.html">FORMATOS DE INSP.</a>
+      <a href="/Rubros.html">RUBROS</a>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 col-md-2 filter-group">
+        <select id="filterPlanta" class="form-control">
+          <option value="" selected>Todos - Plantas</option>
+          <option value="Q002-01">IQ NE</option>
+          <option value="Q010-01">IQ COATZA</option>
+          <option value="Q010-02">IQ TX</option>
+          <option value="Q010-03">IQ HM</option>
+          <option value="Q083-01">IQ SC</option>
+        </select>
       </div>
       
-      <div class="col-xs-12 col-md-2">
-          <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
+      <div class="col-xs-12 col-md-2 filter-group">
+        <input type="text" id="filterSuperintendente" class="form-control" placeholder="Superintendente">
       </div>
-      <div class="col-xs-12 col-md-2">
-          <input type="text" id="filterJefe" class="form-control" placeholder="Jefe">
+      
+      <div class="col-xs-12 col-md-2 filter-group">
+        <input type="text" id="filterJefe" class="form-control" placeholder="Jefe">
       </div>
-      <div class="col-xs-12 col-md-2">
-          <input type="text" id="filterDepartamento" class="form-control" placeholder="Departamento">
+      
+      <div class="col-xs-12 col-md-2 filter-group">
+        <input type="text" id="filterDepartamento" class="form-control" placeholder="Departamento">
       </div>
-      <div class="col-xs-12 col-md-2">
-          <input type="text" id="filterTaller" class="form-control" placeholder="Taller"> 
+      
+      <div class="col-xs-12 col-md-2 filter-group">
+        <input type="text" id="filterTaller" class="form-control" placeholder="Taller"> 
       </div>
     
-        <div class="col-xs-12 col-md-2  text-center">
-            <div class="menu-container">
-                <button id="showMenu" class="btn btn-block">
-                    <i class="fa fa-cog"></i> Opciones
-                </button>
-    
-                <ul class="dropdown-menu" id="dropdownMenu">
-                    <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
-                    <li><a onclick="openModal('departamentoModal')">Agregar Departamento y Jefe</a></li>
-                    <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
-                </ul>
-            </div>
+      <div class="col-xs-12 col-md-2 text-center filter-group">
+        <div class="menu-container">
+          <button id="showMenu" class="btn btn-primary btn-block">
+            <i class="fa fa-cog"></i> Opciones
+          </button>
+          
+          <ul class="dropdown-menu" id="dropdownMenu">
+            <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
+            <li><a onclick="openModal('departamentoModal')">Agregar Departamento y Jefe</a></li>
+            <li><a onclick="openModal('tallerModal')">Agregar Taller</a></li>
+          </ul>
         </div>
+      </div>
     </div>
     
-    
-
-      <div id="superintendenteModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('superintendenteModal')">&times;</span>
-            <h2>Agregar Superintendente</h2>
-            <p>Formulario para agregar Superintendente.</p>
-        </div>
+    <div id="superintendenteModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('superintendenteModal')">&times;</span>
+        <h2>Agregar Superintendente</h2>
+        <form id="formSuperintendente">
+          <div class="form-group">
+            <label for="nombreSuperintendente">Nombre:</label>
+            <input type="text" class="form-control" id="nombreSuperintendente" required>
+          </div>
+          <div class="form-group">
+            <label for="plantaSuperintendente">Planta:</label>
+            <select class="form-control" id="plantaSuperintendente" required>
+              <option value="Q002-01">IQ NE</option>
+              <option value="Q010-01">IQ COATZA</option>
+              <option value="Q010-02">IQ TX</option>
+              <option value="Q010-03">IQ HM</option>
+              <option value="Q083-01">IQ SC</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      </div>
     </div>
 
     <div id="departamentoModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('departamentoModal')">&times;</span>
-            <h2>Agregar Departamento y jefe</h2>
-            <p>Formulario para agregar Departamento.</p>
-        </div>
-    </div>
-
-
-
-    <div id="tallerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('tallerModal')">&times;</span>
-            <h2>Agregar Taller</h2>
-            <p>Formulario para agregar Taller.</p>
-        </div>
-    </div>
-      <br/>
-      <!-- Tarjetas de Superintendentes -->
-      <div id="superintendentesContainer" class="row"></div>
-    </div>
-
-    <!-- Modal de Talleres -->
-    <div id="modalTaller" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Lista de Personas en Taller</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('departamentoModal')">&times;</span>
+        <h2>Agregar Departamento y Jefe</h2>
+        <form id="formDepartamento">
+          <div class="form-group">
+            <label for="superintendenteDept">Superintendente:</label>
+            <select class="form-control" id="superintendenteDept" required>
+            </select>
           </div>
-          <div class="modal-body">
-            <ul id="modalTallerLista"></ul>
+          <div class="form-group">
+            <label for="nombreDepartamento">Nombre del Departamento:</label>
+            <input type="text" class="form-control" id="nombreDepartamento" required>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <div class="form-group">
+            <label for="nombreJefe">Nombre del Jefe:</label>
+            <input type="text" class="form-control" id="nombreJefe" required>
           </div>
-        </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
       </div>
     </div>
 
-    <script>
-      $(function() {
-        // Filtros en los campos de texto
-        $("#filterSuperintendente, #filterJefe, #filterPlanta, #filterDepartamento, #filterTaller").on("input", function() {
-            mostrarTarjetas();  // Llamar a la función para mostrar las tarjetas filtradas
-        });
+    <div id="tallerModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('tallerModal')">&times;</span>
+        <h2>Agregar Taller</h2>
+        <form id="formTaller">
+          <div class="form-group">
+            <label for="superintendenteTaller">Superintendente:</label>
+            <select class="form-control" id="superintendenteTaller" required>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="departamentoTaller">Departamento:</label>
+            <select class="form-control" id="departamentoTaller" required>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nombreTaller">Nombre del Taller:</label>
+            <input type="text" class="form-control" id="nombreTaller" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      </div>
+    </div>
     
-        // Autocomplete para Superintendente
-        $("#filterSuperintendente").autocomplete({
-            source: function(request, response) {
-                var filtered = getUniqueValues(dummyData, 'nombre');
-                response(filtered.filter(function(sup) {
-                    return sup.toLowerCase().includes(request.term.toLowerCase());
-                }));
-            }
-        });
+    <hr>
     
-        // Autocomplete para Jefe
-        $("#filterJefe").autocomplete({
-            source: function(request, response) {
-                var filtered = [];
-                dummyData.forEach(function(planta) {
-                    planta.superintendentes.forEach(function(sup) {
-                        sup.departamentos.forEach(function(dept) {
-                            if (dept.jefe && !filtered.includes(dept.jefe)) {
-                                filtered.push(dept.jefe);
-                            }
-                        });
-                    });
-                });
-                response(filtered.filter(function(jefe) {
-                    return jefe.toLowerCase().includes(request.term.toLowerCase());
-                }));
-            }
-        });
-    });
-    
+    <div id="superintendentesContainer" class="row"></div>
+  </div>
+
+  <div id="modalTaller" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Lista de Personas en Taller</h4>
+        </div>
+        <div class="modal-body">
+          <ul id="modalTallerLista" class="list-group"></ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
     function getUniqueValues(data, key) {
-      var values = [];
+      const values = [];
       data.forEach(function(planta) {
-          planta.superintendentes.forEach(function(sup) {
-              if (!values.includes(sup[key])) {
-                  values.push(sup[key]);
-              }
-          });
+        planta.superintendentes.forEach(function(sup) {
+          if (!values.includes(sup[key])) {
+            values.push(sup[key]);
+          }
+        });
       });
       return values;
-  }
-  
-    const button = document.getElementById("showMenu");
-          const menu = document.getElementById("dropdownMenu");
+    }
 
-          button.addEventListener("click", function (event) {
-              event.stopPropagation();
-              menu.style.display = menu.style.display === "block" ? "none" : "block";
-          });
-
-
-          document.addEventListener("click", function (event) {
-              if (!menu.contains(event.target) && event.target !== button) {
-                  menu.style.display = "none";
-              }
-          });
-
-          function openModal(modalId) {
-              document.getElementById(modalId).style.display = "flex";
-              menu.style.display = "none"; 
-          }
-
-
-          function closeModal(modalId) {
-              document.getElementById(modalId).style.display = "none";
-          }
-  
-          function mostrarTarjetas() {
-            var container = $("#superintendentesContainer");
-            container.empty();
-        
-            var superintendenteFilter = $("#filterSuperintendente").val().toLowerCase();
-            var jefeFilter = $("#filterJefe").val().toLowerCase();
-            var departamentoFilter = $("#filterDepartamento").val().toLowerCase();
-            var tallerFilter = $("#filterTaller").val().toLowerCase();
-            var plantaFilter = $("#filterPlanta").val().toLowerCase();
-        
-            dummyData.forEach(function(planta) {
-                if (planta.planta.toLowerCase().includes(plantaFilter)) {  // Filtrar por planta
-                    planta.superintendentes.forEach(function(sup) {
-                        sup.departamentos.forEach(function(dept) {
-                            if (
-                                (superintendenteFilter === "" || sup.nombre.toLowerCase().includes(superintendenteFilter)) &&
-                                (jefeFilter === "" || dept.jefe.toLowerCase().includes(jefeFilter)) &&
-                                (departamentoFilter === "" || dept.nombre.toLowerCase().includes(departamentoFilter)) 
-                            ) {
-                                // Filtrar talleres si hay un valor en el filtro de Taller
-                                Object.keys(dept.talleres).forEach(function(taller) {
-                                    if (tallerFilter === "" || taller.toLowerCase().includes(tallerFilter)) {
-                                        var card = $('<div class="col-md-4"></div>');
-                                        var cardContent = `
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">${sup.nombre}</div>
-                                                <div class="panel-body">
-                                                    <strong>Departamento:</strong> ${dept.nombre} <br>
-                                                    <strong>Jefe:</strong> ${dept.jefe} <br>
-                                                    <strong>Taller:</strong> ${taller} <br>
-                                                    <button class="btn btn-info btn-sm" onclick="verModal('${taller}', '${sup.nombre}')">Ver Taller</button>
-                                                </div>
-                                            </div>
-                                        `;
-                                        card.html(cardContent);
-                                        container.append(card);
-                                    }
-                                });
-                            }
-                        });
-                    });
-                }
-            });
+    $(function() {
+      $("#filterSuperintendente, #filterJefe, #filterPlanta, #filterDepartamento, #filterTaller").on("input change", function() {
+        mostrarTarjetas();  
+      });
+    
+      $("#filterSuperintendente").autocomplete({
+        source: function(request, response) {
+          const filtered = getUniqueValues(dummyData, 'nombre');
+          response(filtered.filter(function(sup) {
+            return sup.toLowerCase().includes(request.term.toLowerCase());
+          }));
+        },
+        select: function(event, ui) {
+          $(this).val(ui.item.value);
+          mostrarTarjetas();
+          return false;
         }
-        
-      function verModal(taller, superintendente) {
-        var modalLista = $("#modalTallerLista");
-        modalLista.empty();
+      });
+    
+      $("#filterJefe").autocomplete({
+        source: function(request, response) {
+          const filtered = [];
+          dummyData.forEach(function(planta) {
+            planta.superintendentes.forEach(function(sup) {
+              sup.departamentos.forEach(function(dept) {
+                if (dept.jefe && !filtered.includes(dept.jefe)) {
+                  filtered.push(dept.jefe);
+                }
+              });
+            });
+          });
+          response(filtered.filter(function(jefe) {
+            return jefe.toLowerCase().includes(request.term.toLowerCase());
+          }));
+        },
+        select: function(event, ui) {
+          $(this).val(ui.item.value);
+          mostrarTarjetas();
+          return false;
+        }
+      });
+      
+      $("#filterDepartamento").autocomplete({
+        source: function(request, response) {
+          const filtered = [];
+          dummyData.forEach(function(planta) {
+            planta.superintendentes.forEach(function(sup) {
+              sup.departamentos.forEach(function(dept) {
+                if (!filtered.includes(dept.nombre)) {
+                  filtered.push(dept.nombre);
+                }
+              });
+            });
+          });
+          response(filtered.filter(function(dept) {
+            return dept.toLowerCase().includes(request.term.toLowerCase());
+          }));
+        },
+        select: function(event, ui) {
+          $(this).val(ui.item.value);
+          mostrarTarjetas();
+          return false;
+        }
+      });
+      
+      $("#filterTaller").autocomplete({
+        source: function(request, response) {
+          const filtered = [];
+          dummyData.forEach(function(planta) {
+            planta.superintendentes.forEach(function(sup) {
+              sup.departamentos.forEach(function(dept) {
+                Object.keys(dept.talleres).forEach(function(taller) {
+                  if (!filtered.includes(taller)) {
+                    filtered.push(taller);
+                  }
+                });
+              });
+            });
+          });
+          response(filtered.filter(function(taller) {
+            return taller.toLowerCase().includes(request.term.toLowerCase());
+          }));
+        },
+        select: function(event, ui) {
+          $(this).val(ui.item.value);
+          mostrarTarjetas();
+          return false;
+        }
+      });
+    });
 
-        dummyData.forEach(function(planta) {
+    const button = document.getElementById("showMenu");
+    const menu = document.getElementById("dropdownMenu");
+
+    button.addEventListener("click", function(event) {
+      event.stopPropagation();
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function(event) {
+      if (!menu.contains(event.target) && event.target !== button) {
+        menu.style.display = "none";
+      }
+    });
+
+
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = "flex";
+      menu.style.display = "none";
+      
+      if (modalId === 'departamentoModal' || modalId === 'tallerModal') {
+        const selectSup = document.getElementById(modalId === 'departamentoModal' ? 'superintendenteDept' : 'superintendenteTaller');
+        selectSup.innerHTML = '';
+        
+        dummyData.forEach(planta => {
+          planta.superintendentes.forEach(sup => {
+            const option = document.createElement('option');
+            option.value = sup.nombre;
+            option.textContent = `${sup.nombre} (${planta.planta})`;
+            selectSup.appendChild(option);
+          });
+        });
+      }
+      
+      if (modalId === 'tallerModal') {
+        document.getElementById('superintendenteTaller').addEventListener('change', function() {
+          const supName = this.value;
+          const deptSelect = document.getElementById('departamentoTaller');
+          deptSelect.innerHTML = '';
+          
+          dummyData.forEach(planta => {
+            planta.superintendentes.forEach(sup => {
+              if (sup.nombre === supName) {
+                sup.departamentos.forEach(dept => {
+                  const option = document.createElement('option');
+                  option.value = dept.nombre;
+                  option.textContent = dept.nombre;
+                  deptSelect.appendChild(option);
+                });
+              }
+            });
+          });
+        });
+        
+        document.getElementById('superintendenteTaller').dispatchEvent(new Event('change'));
+      }
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    function mostrarTarjetas() {
+      const container = $("#superintendentesContainer");
+      container.empty();
+      
+      const superintendenteFilter = $("#filterSuperintendente").val().toLowerCase();
+      const jefeFilter = $("#filterJefe").val().toLowerCase();
+      const departamentoFilter = $("#filterDepartamento").val().toLowerCase();
+      const tallerFilter = $("#filterTaller").val().toLowerCase();
+      const plantaFilter = $("#filterPlanta").val().toLowerCase();
+      
+      const superintendentes = {};
+      
+      dummyData.forEach(function(planta) {
+        if (plantaFilter === "" || planta.planta.toLowerCase().includes(plantaFilter)) {
           planta.superintendentes.forEach(function(sup) {
-            if (sup.nombre === superintendente) {
-              var personas = sup.departamentos[0].talleres[taller];
-              personas.forEach(function(persona) {
-                modalLista.append('<li>' + persona + '</li>');
+            if (superintendenteFilter === "" || sup.nombre.toLowerCase().includes(superintendenteFilter)) {
+              if (!superintendentes[sup.nombre]) {
+                superintendentes[sup.nombre] = {
+                  nombre: sup.nombre,
+                  planta: planta.planta,
+                  departamentos: []
+                };
+              }
+              
+              sup.departamentos.forEach(function(dept) {
+                if ((jefeFilter === "" || dept.jefe.toLowerCase().includes(jefeFilter)) &&
+                    (departamentoFilter === "" || dept.nombre.toLowerCase().includes(departamentoFilter))) {
+                  
+                  const talleresFiltrados = {};
+                  let hayTalleresFiltrados = false;
+                  
+                  Object.keys(dept.talleres).forEach(function(taller) {
+                    if (tallerFilter === "" || taller.toLowerCase().includes(tallerFilter)) {
+                      talleresFiltrados[taller] = dept.talleres[taller];
+                      hayTalleresFiltrados = true;
+                    }
+                  });
+                  
+                  if (hayTalleresFiltrados) {
+                    superintendentes[sup.nombre].departamentos.push({
+                      nombre: dept.nombre,
+                      jefe: dept.jefe,
+                      talleres: talleresFiltrados
+                    });
+                  }
+                }
               });
             }
           });
-        });
+        }
+      });
+      
 
-        $('#modalTaller').modal('show');
+      
+      Object.values(superintendentes).forEach(function(sup) {
+        if (sup.departamentos.length > 0) {
+          const colDiv = $('<div class="col-md-6"></div>');
+          const panelDiv = $('<div class="panel panel-primary superintendente-card"></div>');
+          
+          const headerDiv = $('<div class="panel-heading"></div>');
+          headerDiv.append(`<h3 class="panel-title"><i class="fa fa-user"></i> ${sup.nombre} (${sup.planta})</h3>`);
+          panelDiv.append(headerDiv);
+          
+          const bodyDiv = $('<div class="panel-body"></div>');
+          
+          sup.departamentos.forEach(function(dept) {
+            const deptDiv = $('<div class="departamento-item"></div>');
+            deptDiv.append(`<h4>${dept.nombre} <small>Jefe: ${dept.jefe}</small></h4>`);
+            
+            const talleresDiv = $('<div class="talleres-container"></div>');
+            Object.keys(dept.talleres).forEach(function(taller) {
+              const tallerBtn = $(`<span class="label label-info taller-badge"> <i class="fa fa-eye"></i> ${taller}</span>`);
+              tallerBtn.on('click', function() {
+                verModal(taller, sup.nombre);
+              });
+              talleresDiv.append(tallerBtn);
+            });
+            
+            deptDiv.append(talleresDiv);
+            bodyDiv.append(deptDiv);
+          });
+          
+          panelDiv.append(bodyDiv);
+          colDiv.append(panelDiv);
+          container.append(colDiv);
+        }
+      });
+      
+      if (supOrdenados.length === 0 || !supOrdenados.some(sup => sup.departamentos.length > 0)) {
+        container.append('<div class="col-xs-12 text-center"><h4>No se encontraron resultados con los filtros seleccionados</h4></div>');
       }
+    }
+      
+    function verModal(taller, superintendente) {
+      const modalLista = $("#modalTallerLista");
+      modalLista.empty();
+      
+      $('.modal-title').text(`Personal del Taller: ${taller}`);
 
-      $(document).ready(function() {
-        $(".menu-toggle").click(function(){
-          $(".mobile-menu").slideToggle();
+      dummyData.forEach(function(planta) {
+        planta.superintendentes.forEach(function(sup) {
+          if (sup.nombre === superintendente) {
+            sup.departamentos.forEach(function(dept) {
+              if (dept.talleres[taller]) {
+                const personas = dept.talleres[taller];
+                personas.forEach(function(persona) {
+                  modalLista.append(`<li class="list-group-item">${persona}</li>`);
+                });
+              }
+            });
+          }
+        });
       });
 
-        mostrarTarjetas();
+      $('#modalTaller').modal('show');
+    }
 
-        
+    $(document).ready(function() {
+      $(".menu-toggle").click(function() {
+        $(".mobile-menu").slideToggle();
       });
-    </script>
-  </body>
+
+      $('#formSuperintendente').on('submit', function(e) {
+        e.preventDefault();
+        alert('Superintendente agregado correctamente');
+        closeModal('superintendenteModal');
+      });
+      
+      $('#formDepartamento').on('submit', function(e) {
+        e.preventDefault();
+        alert('Departamento agregado correctamente');
+        closeModal('departamentoModal');
+      });
+      
+      $('#formTaller').on('submit', function(e) {
+        e.preventDefault();
+        alert('Taller agregado correctamente');
+        closeModal('tallerModal');
+      });
+
+      mostrarTarjetas();
+    });
+  </script>
+</body>
 </html>
