@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,8 +12,13 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
-
+    <script src="dummyData.js"></script>
     <style>
+        /* Estilos adicionales para los filtros y menú */
+        .menu-icon {
+            cursor: pointer;
+            font-size: 24px;
+        }
         .li-styles {
             width: 100%;
             display: inline-flex;
@@ -49,7 +53,8 @@
 <body>
     <div class="container-fluid">
         <div>
-    
+            <!-- Menú con icono -->
+            <span class="menu-icon fa fa-bars" data-toggle="modal" data-target="#menuModal"></span>
         </div>
         <br>
         <div class="row" align="left">
@@ -58,7 +63,7 @@
                 <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
                 <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
                 <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
-                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                        
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>                         
             </ul>
         </div>
         <br>
@@ -67,31 +72,53 @@
     <div align="center">
         <form class="form-inline" id="fadmin">
             <input type="hidden" name="ppasstmp" id="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
+            <!-- Filtros adicionales -->
             <div class="form-group">
                 <label class="control-label">Planta</label>
                 <select class="form-control" name="cbosoc" id="cbosoc" onchange="suptes()">
-                    <option value="Q002-01" >IQ NE                    </option>
-                    <option value="Q010-01" SELECTED>IQ COATZA                    </option>
-                    <option value="Q010-02" >IQ TX                    </option>
-                    <option value="Q010-03" >IQ HM                    </option>
-                    <option value="Q083-01" >IQ SC                    </option>
+                    <option value="Q002-01">IQ NE</option>
+                    <option value="Q010-01" SELECTED>IQ COATZA</option>
+                    <option value="Q010-02">IQ TX</option>
+                    <option value="Q010-03">IQ HM</option>
+                    <option value="Q083-01">IQ SC</option>
                 </select>
             </div>
-            <!-- Superindentes fijos -->
+            <!-- Superintendentes -->
             <div class="form-group">
                 <label class="control-label">Superintendente</label>
                 <select class="form-control" name="cbosupte" id="cbosupte">
                     <option value="0">TODOS</option>
                     <option value="111010081">ELIAS SANTIAGO ARTEAGA</option>
                     <option value="11101215">LAZARO DE LA CRUZ GARCIA LOPEZ</option>
-                    <option value="11103195">LINO CAMPOS DIAZ</option>
-                    <option value="111032183">OSVALDO ALFONSO SUSILLA</option>
-                    <option value="111032379">ARTURO HERNANDEZ HERRERA</option>
-                    <option value="111032384">ERNESTO ALONSO MARTIN DEL CAMPO SALAZAR</option>
-                    <option value="test1">OSVALDO ALFONSO SUSILLA</option>
-                    <option value="test2">VICTOR HUGO MORALES CANTERO</option>
+                    <!-- Agregar más opciones según sea necesario -->
                 </select>
             </div>
+            <!-- Filtros para jefe, departamento y taller -->
+            <div class="form-group">
+                <label class="control-label">Jefe</label>
+                <select class="form-control" name="jefe" id="jefe">
+                    <option value="0">TODOS</option>
+                    <option value="1">Jefe 1</option>
+                    <option value="2">Jefe 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Departamento</label>
+                <select class="form-control" name="depto" id="depto">
+                    <option value="0">TODOS</option>
+                    <option value="Depto 1">Depto 1</option>
+                    <option value="Depto 2">Depto 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Taller</label>
+                <select class="form-control" name="taller" id="taller">
+                    <option value="0">TODOS</option>
+                    <option value="Taller 1">Taller 1</option>
+                    <option value="Taller 2">Taller 2</option>
+                </select>
+            </div>
+            <!-- Botón de búsqueda -->
             <acronym title="Buscar">
                 <button type="button" class="btn btn-success" onclick="buscar()">
                     <span class="fa fa-search"></span>
@@ -102,160 +129,34 @@
     <br>
     <div class="container-fluid" id="cont" style="overflow-x:auto;">
     </div>
-    <div id="msup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="msup-title" aria-hidden="true">
+
+    <!-- Modal de menú con tres opciones -->
+    <div class="modal fade" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span class="fa fa-times"></span>
                     </button>
-                    <h5 class="modal-title" id="modal-title">
-                    </h5>
+                    <h5 class="modal-title" id="menuModalLabel">Opciones</h5>
                 </div>
-                <div class="modal-body" id="bsup">
-                    <form id="fsup">
-                        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
-                        <input type="hidden" name="soc" id="soc">
-                        <input type="hidden" name="depto" id="depto">
-                        <input type="hidden" name="correo" id="correo">
-                        <div class="form-group" id="dvidsup">
-                            <label class="control-label">Nombre de empleado</label>
-                            <div class="input-group">
-                                <input type="hidden" name="idsup" id="idsup" value="">
-                                <input type="text" class="form-control" id="nombre" name="nombre">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" id="btnbus" name="btnbus"
-                                        type="button">Buscar</button>
-                                </span>
-                            </div>
-                            <p id="divusurespinfo" hidden style="color: red;">De click en buscar y seleccione</p>
-                        </div>
-                        <div class="form-group" id="dvareas">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary btn-md" onclick="addSup()">Guardar</button>
+                <div class="modal-body">
+                    <ul>
+                        <li><a href="#">Opción 1</a></li>
+                        <li><a href="#">Opción 2</a></li>
+                        <li><a href="#">Opción 3</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-<div class="modal fade modal-second-level" id="modbus" tabindex="-1" role="dialog" aria-hidden="true">    <div class="modal-dialog" role="document">        <div class="modal-content">            <div class="modal-header">                <button type="button" class="close" data-dismiss="modal" aria-label="Close">                    <span class="fa fa-times"></span>                </button>                <h4 class="modal-title">Usuarios que contienen <span id="descusu"></span></h4>            </div>            <div class="modal-body" id="listusu">            </div>            <div class="modal-footer">                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>            </div>        </div>    </div></div>    <!-- MODAL ELIMINAR -->
-    <div class="modal fade" id="mdel" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content modal-sm">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            class="fa fa-times"></span></button>
-                    <h4 class="modal-title" aling="center">Eliminar</h4>
-                </div>
-                <div class="modal-body" align="center">
-                    <h4>¿Seguro que desea eliminar?</h4>
-                    <form id="fdel">
-                        <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
-                        <input id="deldepto" name="depto" type="text" hidden>
-                        <input id="delsup" name="user" type="text" hidden>
-                        <input id="delarea" name="area" type="text" hidden>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="eliminar()">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="aviso" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body" align="center">
-                    <h4>Guardando...</h4>
-                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <script>
         const ppasstmp = $("#token").val();
         $(document).ready(function () {
             buscar();
         });
-         dummyData = [
-         {
-           "planta": "IQ Coatza",
-           "superintendentes": [
-             {
-               "nombre": "Pedro Lopez",
-               "departamentos": [
-                 {
-                   "nombre": "Producción",
-                   "jefe": "Carlos Mendoza",
-                   "talleres": {
-                     "Taller A": ["A1", "A2"],
-                     "Taller B": ["B1", "B2"]
-                   }
-                 },
-                 {
-                   "nombre": "Calidad",
-                   "jefe": "Laura Gómez",
-                   "talleres": {
-                     "Taller C": ["C1", "C2"],
-                     "Taller D": ["D1", "D2"]
-                   }
-                 }
-               ]
-             },
-             {
-               "nombre": "Ana Torres",
-               "departamentos": [
-                 {
-                   "nombre": "Mantenimiento",
-                   "jefe": "Ricardo López",
-                   "talleres": {
-                     "Taller E": ["E1", "E2"],
-                     "Taller F": ["F1", "F2"]
-                   }
-                 },
-                 {
-                   "nombre": "Logística",
-                   "jefe": "Sofía Martínez",
-                   "talleres": {
-                     "Taller G": ["G1", "G2"],
-                     "Taller H": ["H1", "H2"]
-                   }
-                 }
-               ]
-             }
-           ]
-         },
-         {
-           "planta": "IQ TX",
-           "superintendentes": [
-             {
-               "nombre": "Maria Hernandez",
-               "departamentos": [
-                 {
-                   "nombre": "Seguridad",
-                   "jefe": "Fernando Ramírez",
-                   "talleres": {
-                     "Taller I": ["I1", "I2"],
-                     "Taller J": ["J1", "J2"]
-                   }
-                 },
-                 {
-                   "nombre": "Recursos Humanos",
-                   "jefe": "Paola Sánchez",
-                   "talleres": {
-                     "Taller K": ["K1", "K2"],
-                     "Taller L": ["L1", "L2"]
-                   }
-                 }
-               ]
-             }
-           ]
-         }
-       ]
+         
        
        function suptes() {
         const selectedPlanta = $("#cbosoc").val();
@@ -356,8 +257,7 @@
         $("#dvnombre").removeClass("has-error");
         $("#divusurespinfo").hide();
         $("#modal-title").html("<strong>NUEVO SUPERVISOR " + ddep.toUpperCase() + "</strong>");
-        
-        // Simulate areas data
+
         const areasHTML = `
             <label class="control-label">Áreas</label>
             <div class="checkbox">
