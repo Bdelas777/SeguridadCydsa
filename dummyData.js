@@ -68,14 +68,6 @@ const dummyData = [
                 "Pruebas": ["Gabriela Pineda", "Armando León"]
               }
             },
-            {
-                nombre: "Investigación",
-                jefe: "Sergio Mora",
-                talleres: {
-                  "Desarrollo": ["Fernanda Robles", "Ricardo Montes"],
-                  "Pruebas": ["Gabriela Pineda", "Armando León"]
-                }
-              },
           ]
         }
       ]
@@ -144,4 +136,10 @@ const dummyData = [
         }
       ]
     }
+  ];
+
+  let personasDisponibles = [
+    "Juan Pérez", "María López", "Carlos Rodríguez", "Ana García", 
+    "Luis Martínez", "Laura Sánchez", "Roberto González", "Patricia Díaz",
+    "Miguel Hernández", "Claudia Torres", "Fernando Ramírez", "Silvia Castro"
   ];

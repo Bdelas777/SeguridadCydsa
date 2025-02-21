@@ -13,6 +13,10 @@
   <script src="dummyData.js"></script>
   <link rel="stylesheet" href="super.css">  
   <style>
+    .ui-autocomplete {
+      z-index: 1051 !important; 
+    }
+    
     .mobile-menu {
       display: none;
       background-color: #f8f8f8;
@@ -287,7 +291,6 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="btnAgregarPersonas"><i class="fa fa-plus"></i> Agregar Personas</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>
@@ -305,8 +308,7 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="buscarPersona">Buscar Persona:</label>
-            <input type="text" class="form-control" id="buscarPersona" placeholder="Escriba el nombre de la persona">
+            <input type="text" class="form-control" id="buscarPersona" placeholder="Escriba el nombre de la persona a agregar">
           </div>
           <div id="personasSeleccionadas" class="well well-sm" style="min-height: 50px; margin-top: 15px;">
             <p id="mensajeNoSeleccionados" class="text-muted">No hay personas seleccionadas</p>
@@ -346,12 +348,6 @@
 
     let tallerActual = '';
     let superintendenteActual = '';
-    let personasDisponibles = [
-      "Juan Pérez", "María López", "Carlos Rodríguez", "Ana García", 
-      "Luis Martínez", "Laura Sánchez", "Roberto González", "Patricia Díaz",
-      "Miguel Hernández", "Claudia Torres", "Fernando Ramírez", "Silvia Castro"
-    ];
-
     function getUniqueValues(data, key) {
       const values = [];
       data.forEach(function(planta) {
@@ -689,13 +685,11 @@
     function agregarPersonaSeleccionada(nombre) {
       $('#mensajeNoSeleccionados').hide();
       
-      // Verificar si la persona ya está seleccionada
       if ($('#personasSeleccionadas').find(`[data-nombre="${nombre}"]`).length > 0) {
         alert('¡Esta persona ya está seleccionada!');
         return;
       }
-      
-      // Verificar si la persona ya está en el taller actual
+
       let yaEnTaller = false;
       dummyData.forEach(function(planta) {
         planta.superintendentes.forEach(function(sup) {
@@ -748,7 +742,6 @@
           if (sup.nombre === superintendenteActual) {
             sup.departamentos.forEach(function(dept) {
               if (dept.talleres[tallerActual]) {
-                // Agregar solo personas que no estén ya en el taller
                 nuevasPersonas.forEach(function(persona) {
                   if (!dept.talleres[tallerActual].includes(persona)) {
                     dept.talleres[tallerActual].push(persona);
@@ -771,7 +764,7 @@
       
       verModal(tallerActual, superintendenteActual);
     }
-  
+
 
     $(document).ready(function() {
       $(".menu-toggle").click(function() {
@@ -795,11 +788,21 @@
         alert('Taller agregado correctamente');
         closeModal('tallerModal');
       });
+
+      $("#buscarPersona").autocomplete({
+        source: personasDisponibles,
+        minLength: 0,  
+        select: function(event, ui) {
+          agregarPersonaSeleccionada(ui.item.value);
+          $(this).val('');
+          return false;
+        }
+      }).focus(function() {
+        $(this).autocomplete("search", "");
+      });
+
       $("#buscarPersona").autocomplete({
         source: function(request, response) {
-          const term = request.term.toLowerCase();
-          
-          // Obtener personas que ya están en el taller actual
           let personasEnTaller = [];
           dummyData.forEach(function(planta) {
             planta.superintendentes.forEach(function(sup) {
@@ -813,20 +816,21 @@
             });
           });
           
-          // Filtrar personas disponibles que coinciden con el término de búsqueda
-          // y no están ya en el taller
-          const matches = personasDisponibles.filter(function(persona) {
-            return persona.toLowerCase().includes(term) && 
-                   !personasEnTaller.includes(persona);
+          const personasFiltradas = personasDisponibles.filter(function(persona) {
+            return !personasEnTaller.includes(persona) && 
+              (request.term === "" || persona.toLowerCase().includes(request.term.toLowerCase()));
           });
           
-          response(matches);
+          response(personasFiltradas);
         },
+        minLength: 0,
         select: function(event, ui) {
           agregarPersonaSeleccionada(ui.item.value);
           $(this).val('');
           return false;
         }
+      }).focus(function() {
+        $(this).autocomplete("search", "");
       });
 
       $('#btnAgregarPersonas').on('click', mostrarModalAgregarPersonas);
@@ -840,72 +844,3 @@
   </script>
 </body>
 </html>
-
-
-
-// Modificaciones para los formularios de agregar
-$('#formSuperintendente').on('submit', function(e) {
-  e.preventDefault();
-  const nombre = $('#nombreSuperintendente').val();
-  const planta = $('#plantaSuperintendente').val();
-  
-  if (!nombre || !planta) {
-    alert('Por favor complete todos los campos requeridos');
-    return;
-  }
-  
-  // Aquí iría la lógica para agregar el superintendente a los datos
-  // Por ahora solo mostramos un mensaje
-  alert(`Superintendente "${nombre}" agregado correctamente a la planta ${planta}`);
-  
-  // Limpiar el formulario
-  $('#nombreSuperintendente').val('');
-  closeModal('superintendenteModal');
-  mostrarTarjetas();
-});
-
-$('#formDepartamento').on('submit', function(e) {
-  e.preventDefault();
-  const superintendente = $('#superintendenteDept').val();
-  const departamento = $('#nombreDepartamento').val();
-  const jefe = $('#nombreJefe').val();
-  
-  if (!superintendente || !departamento || !jefe) {
-    alert('Por favor complete todos los campos requeridos');
-    return;
-  }
-  
-  // Aquí iría la lógica para agregar el departamento a los datos
-  // Por ahora solo mostramos un mensaje
-  alert(`Departamento "${departamento}" con jefe "${jefe}" agregado correctamente al superintendente ${superintendente}`);
-  
-  // Limpiar el formulario
-  $('#nombreDepartamento').val('');
-  $('#nombreJefe').val('');
-  closeModal('departamentoModal');
-  mostrarTarjetas();
-});
-
-$('#formTaller').on('submit', function(e) {
-  e.preventDefault();
-  const superintendente = $('#superintendenteTaller').val();
-  const departamento = $('#departamentoTaller').val();
-  const taller = $('#nombreTaller').val();
-  
-  if (!superintendente || !departamento || !taller) {
-    alert('Por favor complete todos los campos requeridos');
-    return;
-  }
-  
-  // Aquí iría la lógica para agregar el taller a los datos
-  // Por ahora solo mostramos un mensaje
-  alert(`Taller "${taller}" agregado correctamente al departamento ${departamento} del superintendente ${superintendente}`);
-  
-  // Limpiar el formulario
-  $('#nombreTaller').val('');
-  closeModal('tallerModal');
-  mostrarTarjetas();
-});
-
-// Modificar la lógica de autocomplete para usar personasDisponibles
-// y filtrar personas que ya están en el taller
