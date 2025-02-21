@@ -1,4 +1,7 @@
-<style>
+.ui-autocomplete {
+  z-index: 1051 !important; 
+}
+
 .mobile-menu {
   display: none;
   background-color: #f8f8f8;
@@ -72,9 +75,18 @@
   cursor: pointer;
 }
 
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+
 .superintendente-card {
   margin-bottom: 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
 }
 
 .departamento-item {
@@ -86,9 +98,26 @@
   margin-right: 5px;
   margin-bottom: 5px;
   display: inline-block;
+  padding: 10px 10px; 
 }
 
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: #fff; 
+  background-color: #007bff; 
+  border: 1px solid #007bff; 
+}
+
+
 @media (max-width: 768px) {
+  
+.row {
+  display: block;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
   .menu-toggle {
     display: block;
   }
@@ -100,5 +129,5 @@
   .filter-group {
     margin-bottom: 10px;
   }
+  
 }
-</style>

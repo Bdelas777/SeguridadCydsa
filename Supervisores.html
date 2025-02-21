@@ -12,129 +12,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="dummyData.js"></script>
   <link rel="stylesheet" href="super.css">  
-  <style>
-    .ui-autocomplete {
-      z-index: 1051 !important; 
-    }
-    
-    .mobile-menu {
-      display: none;
-      background-color: #f8f8f8;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    
-    .mobile-menu a {
-      display: block;
-      padding: 10px 15px;
-      text-decoration: none;
-      color: #337ab7;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    .mobile-menu a:last-child {
-      border-bottom: none;
-    }
-    
-    .menu-toggle {
-      display: none;
-      cursor: pointer;
-      padding: 10px;
-      background-color: #f8f8f8;
-      text-align: center;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    
-    .menu-container {
-      position: relative;
-    }
-    
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      width: 100%;
-      z-index: 1000;
-    }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1050;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .modal-content {
-      background-color: #fefefe;
-      margin: auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 500px;
-      position: relative;
-    }
-    
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    
-
-    .superintendente-card {
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-   
-    }
-    
-    .departamento-item {
-      padding: 10px 15px;
-      border-top: 1px solid #ddd;
-    }
-    
-    .taller-badge {
-      margin-right: 5px;
-      margin-bottom: 5px;
-      display: inline-block;
-      padding: 10px 10px; 
-    }
-    
-    @media (max-width: 768px) {
-      
-    .row {
-      display: block;
-      flex-wrap: wrap;
-    }
-    
-      .menu-toggle {
-        display: block;
-      }
-      
-      .space-nav {
-        display: none;
-      }
-      
-      .filter-group {
-        margin-bottom: 10px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="super.css">
 </head>
 <body>
   <div class="container">
@@ -191,7 +69,6 @@
           <button id="showMenu" class="btn btn-primary btn-block">
             <i class="fa fa-cog"></i> Opciones
           </button>
-          
           <ul class="dropdown-menu" id="dropdownMenu">
             <li><a onclick="openModal('superintendenteModal')">Agregar Superintendente</a></li>
             <li><a onclick="openModal('departamentoModal')">Agregar Departamento y Jefe</a></li>
@@ -273,8 +150,9 @@
     </div>
     
     <hr>
-    
+
     <div id="superintendentesContainer" class="row"></div>
+    
   </div>
 
   <div id="modalTaller" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -324,7 +202,7 @@
   
   
   <div id="modalConfirmacion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
