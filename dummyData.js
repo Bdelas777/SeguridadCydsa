@@ -8,6 +8,7 @@ const dummyData = [
             {
               nombre: "Mantenimiento",
               jefe: "Miguel Sánchez",
+              puestos: ["Soldador", "Ingeniero"],
               talleres: {
                 "Taller Mecánico": ["Ana López", "José Rodríguez", "Luis Silva"],
                 "Taller Eléctrico": ["Carlos Gómez", "Daniel Reyes"]
@@ -16,6 +17,7 @@ const dummyData = [
             {
               nombre: "Seguridad",
               jefe: "Roberto Jiménez",
+              puestos: ["Investigador", "Ingeniero"],
               talleres: {
                 "Taller 1": ["Ana López", "José Rodríguez", "Luis Silva"],
                 "Taller 2": ["Carlos Gómez", "Daniel Reyes"]
@@ -29,6 +31,7 @@ const dummyData = [
             {
               nombre: "Producción",
               jefe: "Roberto Martínez",
+              puestos: [],
               talleres: {
                 "Línea 1": ["Eduardo Torres", "Fernando Ruiz"],
                 "Línea 2": ["Gloria Vega", "Héctor Morales"]
@@ -37,6 +40,7 @@ const dummyData = [
             {
               nombre: "Logística",
               jefe: "Carmen Vázquez",
+              puestos: ["Programador", "Matematico"],
               talleres: {
                 "Almacén": ["Pablo Rojas", "Diana Flores"],
                 "Distribución": ["Martín Soto", "Elena Castro"]
@@ -55,6 +59,7 @@ const dummyData = [
             {
               nombre: "Calidad",
               jefe: "Laura Díaz",
+              puestos: [],
               talleres: {
                 "Laboratorio": ["Ignacio Ramos", "Juana Ortiz"],
                 "Inspección": ["Karla Mendoza", "Lorenzo Jiménez"]
@@ -81,6 +86,7 @@ const dummyData = [
             {
               nombre: "Seguridad",
               jefe: "Norma Vargas",
+              puestos: [],
               talleres: {
                 "Brigada A": ["Óscar Medina", "Patricia Castro"],
                 "Brigada B": ["Quintín Paredes", "Raúl Guerrero"]
@@ -100,6 +106,7 @@ const dummyData = [
             {
               nombre: "Logística",
               jefe: "Santiago Torres",
+              puestos: [],
               talleres: {
                 "Almacén": ["Teresa Vázquez", "Ulises Montes"],
                 "Transporte": ["Verónica Ríos", "Wilson Fuentes"]
@@ -108,6 +115,7 @@ const dummyData = [
             {
               nombre: "Compras",
               jefe: "Lucía Morales",
+              puestos: [],
               talleres: {
                 "Nacional": ["Alejandro Gómez", "Beatriz Suárez"],
                 "Internacional": ["César Vega", "Daniela Ortega"]
@@ -143,3 +151,5 @@ const dummyData = [
     "Luis Martínez", "Laura Sánchez", "Roberto González", "Patricia Díaz",
     "Miguel Hernández", "Claudia Torres", "Fernando Ramírez", "Silvia Castro"
   ];
+
+

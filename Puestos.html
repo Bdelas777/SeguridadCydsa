@@ -13,40 +13,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
     <link rel="stylesheet" href="super.css">
-    <style>
-        /* Personalización visual */
-        .form-inline {
-            margin-top: 20px;
-        }
-        .container {
-            margin-top: 30px;
-        }
-        #cont {
-            margin-top: 20px;
-        }
-        .puesto-item {
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .puesto-item button {
-            margin-left: 10px;
-        }
-    </style>
+    <script src="dummyDataPuesto.js"></script>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row space-nav" align="left">
             <ul class="nav nav-tabs" id="lista">
-              <li role="presentation"><a href="/Supervisores.html">SUPERVISORES</a></li>
-              <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
-              <li role="presentation" class="active"><a href="/Puestos.html">PUESTOS</a></li>
-              <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
-              <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>
+                <li role="presentation"><a href="/Supervisores.html">SUPERVISORES</a></li>
+                <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
+                <li role="presentation" class="active"><a href="/Puestos.html">PUESTOS</a></li>
+                <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
+                <li role="presentation"><a href="/Rubros.html">RUBROS</a></li>
             </ul>
         </div>
     </div>
@@ -67,10 +44,7 @@
             <div class="form-group">
                 <label class="control-label">Departamento</label>
                 <select class="form-control" name="cbodepto" id="cbodepto" onchange="buscar();">
-                    <option value="1">Llenado Y Embarques</option>
-                    <option value="2">Mantenimiento De Celdas</option>
-                    <option value="3">Producción Cloro-Sosa</option>
-                    <!-- Otras opciones... -->
+                    <!-- Los departamentos se llenarán con JavaScript -->
                 </select>
             </div>
 
@@ -89,61 +63,102 @@
     </div>
     <br>
     <div class="container" id="cont" style="overflow-x:auto;">
-        <!-- Aquí se mostrarán los puestos -->
+        <table class="table table-bordered" id="puestosTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="puestosList">
+                <!-- Los puestos serán cargados aquí por JavaScript -->
+            </tbody>
+        </table>
     </div>
 
     <script>
-        // Aquí definimos los datos dummy que reemplazarán el AJAX
-        const dummyData = {
-            puestos: [
-                { id: 1, nombre: "Puesto 1" },
-                { id: 2, nombre: "Puesto 2" },
-                { id: 3, nombre: "Puesto 3" },
-                // Otros puestos...
-            ],
-            departamentos: [
-                { id: 1, nombre: "Llenado Y Embarques" },
-                { id: 2, nombre: "Mantenimiento De Celdas" },
-                { id: 3, nombre: "Producción Cloro-Sosa" },
-                // Otros departamentos...
-            ]
-        };
+        // Función que obtiene los departamentos basados en la planta seleccionada
+        function getDeptos() {
+            const plantaId = $("#cbosoc").val();
+            const plantaData = dummyDataPuesto.find(planta => planta.planta === plantaId);
+            const departamentos = plantaData ? plantaData.superintendentes[0].departamentos : [];
 
-        // Función que simula la búsqueda de puestos
+            let deptoHtml = "<option value=''>Seleccionar Departamento</option>";
+            departamentos.forEach(depto => {
+                deptoHtml += `<option value="${depto.nombre}">${depto.nombre}</option>`;
+            });
+
+            $("#cbodepto").html(deptoHtml);
+        }
+
+        // Función de búsqueda
         function buscar() {
-            const depId = $("#cbodepto").val(); // Obtener el id del departamento seleccionado
+            const depName = $("#cbodepto").val();
 
-            // Filtrar puestos según el departamento (simulado)
-            const filteredPuestos = dummyData.puestos.filter(puesto => puesto.id == depId);
+            // Filtrar puestos según el departamento seleccionado
+            const plantaId = $("#cbosoc").val();
+            const plantaData = dummyDataPuesto.find(planta => planta.planta === plantaId);
+            const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === depName);
 
-            // Mostrar los resultados en la interfaz
+            const puestos = deptoData ? Object.keys(deptoData.talleres) : [];
+
             let resultHtml = "";
-            filteredPuestos.forEach(puesto => {
+            puestos.forEach(puesto => {
+                const descripcion = deptoData.talleres[puesto].join(", ");
                 resultHtml += `
-                    <div class="puesto-item">
-                        <span>${puesto.nombre}</span>
-                        <button class="btn btn-warning btn-sm" onclick="editarPuesto(${puesto.id})">Editar</button>
-                    </div>
+                    <tr>
+                        <td>${puesto}</td>
+                        <td>${puesto}</td>
+                        <td>${descripcion}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editPuesto('${puesto}')">
+                                <span class="fa fa-pencil"></span> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePuesto('${puesto}')">
+                                <span class="fa fa-trash"></span> Eliminar
+                            </button>
+                        </td>
+                    </tr>
                 `;
             });
 
-            $("#cont").html(resultHtml);
+            $("#puestosList").html(resultHtml);
         }
 
-        // Función que simula la creación de un nuevo puesto
+        // Función para agregar un nuevo puesto
         function mAddPuesto() {
-            const newPuesto = { id: dummyData.puestos.length + 1, nombre: "Nuevo Puesto" };
-            dummyData.puestos.push(newPuesto);
-            buscar();  // Volver a cargar los puestos
+            const newPuesto = prompt("Ingresa el nombre del nuevo puesto");
+            if (newPuesto) {
+                alert(`Agregar puesto: ${newPuesto}`);
+                // Aquí puedes añadir la lógica para agregar el puesto a la base de datos o la estructura
+                buscar(); // Actualiza la tabla después de agregar el puesto
+            }
         }
 
-        // Función para editar puesto (solo simulado)
-        function editarPuesto(puestoId) {
-            alert("Editar puesto con ID: " + puestoId);
+        // Función para editar un puesto
+        function editPuesto(puesto) {
+            const descripcion = prompt("Editar descripción para el puesto", "Descripción actual...");
+            if (descripcion) {
+                alert(`Puesto ${puesto} editado con descripción: ${descripcion}`);
+                // Aquí puedes agregar la lógica para actualizar el puesto en la base de datos o estructura
+                buscar(); // Actualiza la tabla después de editar
+            }
+        }
+
+        // Función para eliminar un puesto
+        function deletePuesto(puesto) {
+            if (confirm(`¿Estás seguro que deseas eliminar el puesto: ${puesto}?`)) {
+                alert(`Puesto ${puesto} eliminado`);
+                // Aquí puedes añadir la lógica para eliminar el puesto de la base de datos o estructura
+                buscar(); // Actualiza la tabla después de eliminar
+            }
         }
 
         // Iniciar la búsqueda cuando la página se cargue
         $(document).ready(function() {
+            getDeptos();
             buscar();
         });
     </script>
