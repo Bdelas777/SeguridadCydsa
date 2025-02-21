@@ -650,6 +650,8 @@
     }
   
     function eliminarPersona(persona) {
+      let eliminada = false;
+      
       dummyData.forEach(function(planta) {
         planta.superintendentes.forEach(function(sup) {
           if (sup.nombre === superintendenteActual) {
@@ -658,6 +660,7 @@
                 const index = dept.talleres[tallerActual].indexOf(persona);
                 if (index > -1) {
                   dept.talleres[tallerActual].splice(index, 1);
+                  eliminada = true;
                 }
               }
             });
@@ -666,9 +669,16 @@
       });
       
       $('#modalConfirmacion').modal('hide');
+      
+      if (eliminada) {
+        alert(`Se ha eliminado a ${persona} del taller ${tallerActual}`);
+      } else {
+        alert('No se pudo eliminar a la persona seleccionada');
+      }
+      
       verModal(tallerActual, superintendenteActual);
     }
-  
+    
     function mostrarModalAgregarPersonas() {
       $('#mensajeNoSeleccionados').show();
       $('#personasSeleccionadas').find('.persona-tag').remove();
@@ -681,6 +691,26 @@
       
       // Verificar si la persona ya está seleccionada
       if ($('#personasSeleccionadas').find(`[data-nombre="${nombre}"]`).length > 0) {
+        alert('¡Esta persona ya está seleccionada!');
+        return;
+      }
+      
+      // Verificar si la persona ya está en el taller actual
+      let yaEnTaller = false;
+      dummyData.forEach(function(planta) {
+        planta.superintendentes.forEach(function(sup) {
+          if (sup.nombre === superintendenteActual) {
+            sup.departamentos.forEach(function(dept) {
+              if (dept.talleres[tallerActual] && dept.talleres[tallerActual].includes(nombre)) {
+                yaEnTaller = true;
+              }
+            });
+          }
+        });
+      });
+      
+      if (yaEnTaller) {
+        alert(`¡${nombre} ya pertenece a este taller!`);
         return;
       }
       
@@ -707,26 +737,38 @@
         nuevasPersonas.push($(this).data('nombre'));
       });
       
-      if (nuevasPersonas.length > 0) {
-        dummyData.forEach(function(planta) {
-          planta.superintendentes.forEach(function(sup) {
-            if (sup.nombre === superintendenteActual) {
-              sup.departamentos.forEach(function(dept) {
-                if (dept.talleres[tallerActual]) {
-                  // Agregar solo personas que no estén ya en el taller
-                  nuevasPersonas.forEach(function(persona) {
-                    if (!dept.talleres[tallerActual].includes(persona)) {
-                      dept.talleres[tallerActual].push(persona);
-                    }
-                  });
-                }
-              });
-            }
-          });
-        });
+      if (nuevasPersonas.length === 0) {
+        alert('No hay personas seleccionadas para agregar');
+        return;
       }
       
+      let personasAgregadas = 0;
+      dummyData.forEach(function(planta) {
+        planta.superintendentes.forEach(function(sup) {
+          if (sup.nombre === superintendenteActual) {
+            sup.departamentos.forEach(function(dept) {
+              if (dept.talleres[tallerActual]) {
+                // Agregar solo personas que no estén ya en el taller
+                nuevasPersonas.forEach(function(persona) {
+                  if (!dept.talleres[tallerActual].includes(persona)) {
+                    dept.talleres[tallerActual].push(persona);
+                    personasAgregadas++;
+                  }
+                });
+              }
+            });
+          }
+        });
+      });
+      
       $('#modalAgregarPersonas').modal('hide');
+      
+      if (personasAgregadas > 0) {
+        alert(`Se han agregado ${personasAgregadas} persona(s) al taller ${tallerActual}`);
+      } else {
+        alert('No se agregaron nuevas personas, posiblemente ya estaban en el taller');
+      }
+      
       verModal(tallerActual, superintendenteActual);
     }
   
@@ -756,9 +798,28 @@
       $("#buscarPersona").autocomplete({
         source: function(request, response) {
           const term = request.term.toLowerCase();
-          const matches = personasDisponibles.filter(function(persona) {
-            return persona.toLowerCase().includes(term);
+          
+          // Obtener personas que ya están en el taller actual
+          let personasEnTaller = [];
+          dummyData.forEach(function(planta) {
+            planta.superintendentes.forEach(function(sup) {
+              if (sup.nombre === superintendenteActual) {
+                sup.departamentos.forEach(function(dept) {
+                  if (dept.talleres[tallerActual]) {
+                    personasEnTaller = dept.talleres[tallerActual];
+                  }
+                });
+              }
+            });
           });
+          
+          // Filtrar personas disponibles que coinciden con el término de búsqueda
+          // y no están ya en el taller
+          const matches = personasDisponibles.filter(function(persona) {
+            return persona.toLowerCase().includes(term) && 
+                   !personasEnTaller.includes(persona);
+          });
+          
           response(matches);
         },
         select: function(event, ui) {
@@ -767,8 +828,7 @@
           return false;
         }
       });
-      
-      // Eventos para los botones
+
       $('#btnAgregarPersonas').on('click', mostrarModalAgregarPersonas);
       $('#btnGuardarPersonas').on('click', guardarPersonasSeleccionadas);
       $('#btnConfirmarEliminar').on('click', function() {
@@ -780,3 +840,72 @@
   </script>
 </body>
 </html>
+
+
+
+// Modificaciones para los formularios de agregar
+$('#formSuperintendente').on('submit', function(e) {
+  e.preventDefault();
+  const nombre = $('#nombreSuperintendente').val();
+  const planta = $('#plantaSuperintendente').val();
+  
+  if (!nombre || !planta) {
+    alert('Por favor complete todos los campos requeridos');
+    return;
+  }
+  
+  // Aquí iría la lógica para agregar el superintendente a los datos
+  // Por ahora solo mostramos un mensaje
+  alert(`Superintendente "${nombre}" agregado correctamente a la planta ${planta}`);
+  
+  // Limpiar el formulario
+  $('#nombreSuperintendente').val('');
+  closeModal('superintendenteModal');
+  mostrarTarjetas();
+});
+
+$('#formDepartamento').on('submit', function(e) {
+  e.preventDefault();
+  const superintendente = $('#superintendenteDept').val();
+  const departamento = $('#nombreDepartamento').val();
+  const jefe = $('#nombreJefe').val();
+  
+  if (!superintendente || !departamento || !jefe) {
+    alert('Por favor complete todos los campos requeridos');
+    return;
+  }
+  
+  // Aquí iría la lógica para agregar el departamento a los datos
+  // Por ahora solo mostramos un mensaje
+  alert(`Departamento "${departamento}" con jefe "${jefe}" agregado correctamente al superintendente ${superintendente}`);
+  
+  // Limpiar el formulario
+  $('#nombreDepartamento').val('');
+  $('#nombreJefe').val('');
+  closeModal('departamentoModal');
+  mostrarTarjetas();
+});
+
+$('#formTaller').on('submit', function(e) {
+  e.preventDefault();
+  const superintendente = $('#superintendenteTaller').val();
+  const departamento = $('#departamentoTaller').val();
+  const taller = $('#nombreTaller').val();
+  
+  if (!superintendente || !departamento || !taller) {
+    alert('Por favor complete todos los campos requeridos');
+    return;
+  }
+  
+  // Aquí iría la lógica para agregar el taller a los datos
+  // Por ahora solo mostramos un mensaje
+  alert(`Taller "${taller}" agregado correctamente al departamento ${departamento} del superintendente ${superintendente}`);
+  
+  // Limpiar el formulario
+  $('#nombreTaller').val('');
+  closeModal('tallerModal');
+  mostrarTarjetas();
+});
+
+// Modificar la lógica de autocomplete para usar personasDisponibles
+// y filtrar personas que ya están en el taller
