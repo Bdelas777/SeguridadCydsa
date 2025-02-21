@@ -286,13 +286,71 @@
           <ul id="modalTallerLista" class="list-group"></ul>
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btnAgregarPersonas"><i class="fa fa-plus"></i> Agregar Personas</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>
   </div>
 
+
+  <div id="modalAgregarPersonas" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Agregar Personas al Taller</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="buscarPersona">Buscar Persona:</label>
+            <input type="text" class="form-control" id="buscarPersona" placeholder="Escriba el nombre de la persona">
+          </div>
+          <div id="personasSeleccionadas" class="well well-sm" style="min-height: 50px; margin-top: 15px;">
+            <p id="mensajeNoSeleccionados" class="text-muted">No hay personas seleccionadas</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" id="btnGuardarPersonas">Guardar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div id="modalConfirmacion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Confirmar Eliminación</h4>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro que desea eliminar a esta persona del taller?</p>
+          <input type="hidden" id="personaEliminar">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+
+    let tallerActual = '';
+    let superintendenteActual = '';
+    let personasDisponibles = [
+      "Juan Pérez", "María López", "Carlos Rodríguez", "Ana García", 
+      "Luis Martínez", "Laura Sánchez", "Roberto González", "Patricia Díaz",
+      "Miguel Hernández", "Claudia Torres", "Fernando Ramírez", "Silvia Castro"
+    ];
 
     function getUniqueValues(data, key) {
       const values = [];
@@ -554,9 +612,11 @@
     function verModal(taller, superintendente) {
       const modalLista = $("#modalTallerLista");
       modalLista.empty();
+      tallerActual = taller;
+      superintendenteActual = superintendente;
       
       $('.modal-title').text(`Personal del Taller: ${taller}`);
-
+  
       dummyData.forEach(function(planta) {
         planta.superintendentes.forEach(function(sup) {
           if (sup.nombre === superintendente) {
@@ -564,16 +624,112 @@
               if (dept.talleres[taller]) {
                 const personas = dept.talleres[taller];
                 personas.forEach(function(persona) {
-                  modalLista.append(`<li class="list-group-item">${persona}</li>`);
+                  const btnEliminar = $('<button class="btn btn-danger btn-xs pull-right"><i class="fa fa-trash"></i> Eliminar</button>');
+                  btnEliminar.on('click', function() {
+                    mostrarConfirmacionEliminar(persona);
+                  });
+                  
+                  const listItem = $('<li class="list-group-item"></li>');
+                  listItem.text(persona);
+                  listItem.append(btnEliminar);
+                  modalLista.append(listItem);
                 });
               }
             });
           }
         });
       });
-
+  
       $('#modalTaller').modal('show');
     }
+
+    function mostrarConfirmacionEliminar(persona) {
+      $('#personaEliminar').val(persona);
+      $('#modalTaller').modal('hide');
+      $('#modalConfirmacion').modal('show');
+    }
+  
+    function eliminarPersona(persona) {
+      dummyData.forEach(function(planta) {
+        planta.superintendentes.forEach(function(sup) {
+          if (sup.nombre === superintendenteActual) {
+            sup.departamentos.forEach(function(dept) {
+              if (dept.talleres[tallerActual]) {
+                const index = dept.talleres[tallerActual].indexOf(persona);
+                if (index > -1) {
+                  dept.talleres[tallerActual].splice(index, 1);
+                }
+              }
+            });
+          }
+        });
+      });
+      
+      $('#modalConfirmacion').modal('hide');
+      verModal(tallerActual, superintendenteActual);
+    }
+  
+    function mostrarModalAgregarPersonas() {
+      $('#mensajeNoSeleccionados').show();
+      $('#personasSeleccionadas').find('.persona-tag').remove();
+      $('#modalTaller').modal('hide');
+      $('#modalAgregarPersonas').modal('show');
+    }
+  
+    function agregarPersonaSeleccionada(nombre) {
+      $('#mensajeNoSeleccionados').hide();
+      
+      // Verificar si la persona ya está seleccionada
+      if ($('#personasSeleccionadas').find(`[data-nombre="${nombre}"]`).length > 0) {
+        return;
+      }
+      
+      const personaTag = $(`
+        <div class="persona-tag label label-info" data-nombre="${nombre}" style="display: inline-block; margin: 5px; padding: 8px; font-size: 14px;">
+          ${nombre}
+          <button type="button" class="close" style="float: none; margin-left: 5px; opacity: 0.7;">&times;</button>
+        </div>
+      `);
+      
+      personaTag.find('.close').on('click', function() {
+        personaTag.remove();
+        if ($('#personasSeleccionadas').find('.persona-tag').length === 0) {
+          $('#mensajeNoSeleccionados').show();
+        }
+      });
+      
+      $('#personasSeleccionadas').append(personaTag);
+    }
+  
+    function guardarPersonasSeleccionadas() {
+      const nuevasPersonas = [];
+      $('#personasSeleccionadas').find('.persona-tag').each(function() {
+        nuevasPersonas.push($(this).data('nombre'));
+      });
+      
+      if (nuevasPersonas.length > 0) {
+        dummyData.forEach(function(planta) {
+          planta.superintendentes.forEach(function(sup) {
+            if (sup.nombre === superintendenteActual) {
+              sup.departamentos.forEach(function(dept) {
+                if (dept.talleres[tallerActual]) {
+                  // Agregar solo personas que no estén ya en el taller
+                  nuevasPersonas.forEach(function(persona) {
+                    if (!dept.talleres[tallerActual].includes(persona)) {
+                      dept.talleres[tallerActual].push(persona);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        });
+      }
+      
+      $('#modalAgregarPersonas').modal('hide');
+      verModal(tallerActual, superintendenteActual);
+    }
+  
 
     $(document).ready(function() {
       $(".menu-toggle").click(function() {
@@ -596,6 +752,27 @@
         e.preventDefault();
         alert('Taller agregado correctamente');
         closeModal('tallerModal');
+      });
+      $("#buscarPersona").autocomplete({
+        source: function(request, response) {
+          const term = request.term.toLowerCase();
+          const matches = personasDisponibles.filter(function(persona) {
+            return persona.toLowerCase().includes(term);
+          });
+          response(matches);
+        },
+        select: function(event, ui) {
+          agregarPersonaSeleccionada(ui.item.value);
+          $(this).val('');
+          return false;
+        }
+      });
+      
+      // Eventos para los botones
+      $('#btnAgregarPersonas').on('click', mostrarModalAgregarPersonas);
+      $('#btnGuardarPersonas').on('click', guardarPersonasSeleccionadas);
+      $('#btnConfirmarEliminar').on('click', function() {
+        eliminarPersona($('#personaEliminar').val());
       });
 
       mostrarTarjetas();
