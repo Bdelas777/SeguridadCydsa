@@ -270,8 +270,10 @@
                 guardarRubro();
             });
         });
+
         function buscar() {
-            var cadena = $('#fpart').serialize();
+            var cadena = $('#fpart').val()
+
             var url = "segindparadm100a.r?" + cadena + "&fn=1&sid=" + Math.random();
             $.ajax({
                 url: url,
@@ -291,6 +293,7 @@
                 }
             });
         }
+
         function validRubro() {
             var ps = $("#porcselc").val();
             ps = porcAct - ps;
