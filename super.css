@@ -40,7 +40,7 @@
   display: none;
   position: absolute;
   width: max-content; 
-  min-width: 100px; 
+  min-width: 50px; 
   white-space: normal; 
   word-wrap: break-word;
   z-index: 1000;
