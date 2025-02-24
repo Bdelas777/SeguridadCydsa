@@ -3,13 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Plataforma de Gestión</title>
     <link rel="stylesheet" href="super.css">
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 20px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: normal;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        main {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Este es un archivo index para deploy de vercel no se ocupa</h1>
-        <h2>Selecciona lo que quieras ver:</h2>
+        <h1>Esta sección es un index que nos permite hacer deploy en vercel</h1>
+        <h2>Selecciona una sección para continuar</h2>
         <nav>
             <ul>
                 <li><a href="Supervisores.html">Supervisores</a></li>
@@ -20,11 +108,8 @@
             </ul>
         </nav>
     </header>
-    <main>
-        <p>Selecciona una opción del menú para continuar.</p>
-    </main>
     <footer>
-        <p>&copy; 2024 Plataforma de Gestión</p>
+        <p>&copy; 2025 Prototipo </p>
     </footer>
 </body>
 </html>
