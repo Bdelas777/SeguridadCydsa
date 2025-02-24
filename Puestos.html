@@ -28,122 +28,243 @@
         </div>
     </div>
 
-    <div align="center">
+    <div class="container" style="margin-top: 20px; margin-bottom: 20px;"> 
         <form class="form-inline" id="fbpuesto">
-            <div class="form-group">
-                <label class="control-label">Planta</label>
-                <select class="form-control" name="cbosoc" id="cbosoc" onchange="getDeptos()">
-                    <option value="Q002-01">IQ NE</option>
-                    <option value="Q010-01" SELECTED>IQ COATZA</option>
-                    <option value="Q010-02">IQ TX</option>
-                    <option value="Q010-03">IQ HM</option>
-                    <option value="Q083-01">IQ SC</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">Departamento</label>
-                <select class="form-control" name="cbodepto" id="cbodepto" onchange="buscar();">
-                    <!-- Los departamentos se llenarán con JavaScript -->
-                </select>
+            <div class="form-row justify-content-center">
+                <div class="form-group col-md-3 col-sm-12">
+                    <select class="form-control" name="cbosoc" id="cbosoc" onchange="getDeptos()">
+                        <option value="" selected>Todos - Plantas</option>
+                        <option value="Q002-01">IQ NE</option>
+                        <option value="Q010-01">IQ COATZA</option>
+                        <option value="Q010-02">IQ TX</option>
+                        <option value="Q010-03">IQ HM</option>
+                        <option value="Q083-01">IQ SC</option>
+                    </select>
+                </div>
+    
+                <div class="form-group col-md-3 col-sm-12">
+                    <select class="form-control" name="cbodepto" id="cbodepto" onchange="buscar();">
+                        <option value="">Seleccionar Departamento</option>
+                    </select>
+                </div>
+    
+                <div class="form-group col-md-3 col-sm-12 d-flex align-items-center">
+                    <button type="button" class="btn btn-primary" onclick="mAddPuesto()">
+                        <span class="fa fa-plus"></span>
+                        Nuevo puesto
+                    </button>
+                </div>
             </div>
         </form>
     </div>
-
-    <br>
-    <div class="container" align="right">
-        <button type="button" class="btn btn-primary" onclick="mAddPuesto()">
-            <span class="fa fa-plus"></span>
-            Nuevo puesto
-        </button>
-    </div>
-    <br>
+    
+    
     <div class="container" id="cont" style="overflow-x:auto;">
         <table class="table table-bordered" id="puestosTable">
             <thead>
                 <tr>
-                    <th>Nombre</th>
+                    <th>Planta</th>
+                    <th>Departamento</th>
+                    <th>Puesto</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="puestosList">
-                <!-- Los puestos serán cargados aquí por JavaScript -->
+                <!-- Los puestos se llenarán con JavaScript -->
             </tbody>
         </table>
     </div>
 
     <script>
-         $(function() {
-        });
+        // Plantas y sus nombres para mostrar
+        const plantasNombres = {
+            "": "Todos",
+            "Q002-01": "IQ NE",
+            "Q010-01": "IQ COATZA",
+            "Q010-02": "IQ TX",
+            "Q010-03": "IQ HM",
+            "Q083-01": "IQ SC"
+        };
 
         function getDeptos() {
             const plantaId = $("#cbosoc").val();
-            const plantaData = dummyData.find(planta => planta.planta === plantaId);
-            const departamentos = plantaData ? plantaData.superintendentes[0].departamentos : [];
-
-            let deptoHtml = "<option value=''>Seleccionar Departamento</option>";
-            departamentos.forEach(depto => {
-                deptoHtml += `<option value="${depto.nombre}">${depto.nombre}</option>`;
-            });
-
-            $("#cbodepto").html(deptoHtml);
+            
+            // Si no hay planta seleccionada, mostrar todos los departamentos
+            if (plantaId === "") {
+                let deptoHtml = "<option value=''>Todos los Departamentos</option>";
+                // Obtener todos los departamentos únicos de todas las plantas
+                const departamentosUnicos = new Set();
+                
+                dummyData.forEach(planta => {
+                    if (planta.superintendentes && planta.superintendentes.length > 0) {
+                        planta.superintendentes[0].departamentos.forEach(depto => {
+                            departamentosUnicos.add(depto.nombre);
+                        });
+                    }
+                });
+                
+                // Convertir el Set a Array y ordenar alfabéticamente
+                Array.from(departamentosUnicos).sort().forEach(depto => {
+                    deptoHtml += `<option value="${depto}">${depto}</option>`;
+                });
+                
+                $("#cbodepto").html(deptoHtml);
+            } else {
+                // Si hay planta seleccionada, mostrar solo los departamentos de esa planta
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                let deptoHtml = "<option value=''>Todos los Departamentos</option>";
+                
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+                    // Ordenar departamentos alfabéticamente
+                    const departamentos = [...plantaData.superintendentes[0].departamentos];
+                    departamentos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                    
+                    departamentos.forEach(depto => {
+                        deptoHtml += `<option value="${depto.nombre}">${depto.nombre}</option>`;
+                    });
+                }
+                
+                $("#cbodepto").html(deptoHtml);
+            }
+            
+            // Actualizar la búsqueda
+            buscar();
         }
 
         function buscar() {
-            const depName = $("#cbodepto").val();
             const plantaId = $("#cbosoc").val();
-            const plantaData = dummyData.find(planta => planta.planta === plantaId);
-            const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === depName);
-
-            const puestos = deptoData ? Object.keys(deptoData.talleres) : [];
-
+            const deptoId = $("#cbodepto").val();
             let resultHtml = "";
-            puestos.forEach(puesto => {
-                resultHtml += `
-                    <tr>
-                        <td>${puesto}</td>
-                        <td>${puesto}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="editPuesto('${puesto}')">
-                                <span class="fa fa-pencil"></span> Editar
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deletePuesto('${puesto}')">
-                                <span class="fa fa-trash"></span> Eliminar
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            $("#puestosList").html(resultHtml);
+            
+            // Caso 1: Todas las plantas, todos los departamentos
+            if (plantaId === "" && deptoId === "") {
+                dummyData.forEach(planta => {
+                    if (planta.superintendentes && planta.superintendentes.length > 0) {
+                        planta.superintendentes[0].departamentos.forEach(depto => {
+                            const puestos = Object.keys(depto.talleres || {});
+                            puestos.forEach(puesto => {
+                                resultHtml += generarFilaPuesto(planta.planta, depto.nombre, puesto);
+                            });
+                        });
+                    }
+                });
+            }
+            // Caso 2: Todas las plantas, departamento específico
+            else if (plantaId === "" && deptoId !== "") {
+                dummyData.forEach(planta => {
+                    if (planta.superintendentes && planta.superintendentes.length > 0) {
+                        const departamentosFiltrados = planta.superintendentes[0].departamentos.filter(
+                            depto => depto.nombre === deptoId
+                        );
+                        
+                        departamentosFiltrados.forEach(depto => {
+                            const puestos = Object.keys(depto.talleres || {});
+                            puestos.forEach(puesto => {
+                                resultHtml += generarFilaPuesto(planta.planta, depto.nombre, puesto);
+                            });
+                        });
+                    }
+                });
+            }
+            // Caso 3: Planta específica, todos los departamentos
+            else if (plantaId !== "" && deptoId === "") {
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+                    plantaData.superintendentes[0].departamentos.forEach(depto => {
+                        const puestos = Object.keys(depto.talleres || {});
+                        puestos.forEach(puesto => {
+                            resultHtml += generarFilaPuesto(plantaId, depto.nombre, puesto);
+                        });
+                    });
+                }
+            }
+            // Caso 4: Planta específica, departamento específico
+            else if (plantaId !== "" && deptoId !== "") {
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+                    const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === deptoId);
+                    if (deptoData) {
+                        const puestos = Object.keys(deptoData.talleres || {});
+                        puestos.forEach(puesto => {
+                            resultHtml += generarFilaPuesto(plantaId, deptoId, puesto);
+                        });
+                    }
+                }
+            }
+            
+            $("#puestosList").html(resultHtml || "<tr><td colspan='4' class='text-center'>No se encontraron puestos</td></tr>");
         }
 
+        function generarFilaPuesto(plantaId, deptoNombre, puestoNombre) {
+            const plantaNombre = plantasNombres[plantaId] || plantaId;
+            return `
+                <tr>
+                    <td>${plantaNombre}</td>
+                    <td>${deptoNombre}</td>
+                    <td>${puestoNombre}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editPuesto('${plantaId}', '${deptoNombre}', '${puestoNombre}')">
+                            <span class="fa fa-pencil"></span> Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePuesto('${plantaId}', '${deptoNombre}', '${puestoNombre}')">
+                            <span class="fa fa-trash"></span> Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
 
         function mAddPuesto() {
+            const plantaId = $("#cbosoc").val();
+            const deptoId = $("#cbodepto").val();
+            
+            if (plantaId === "") {
+                alert("Por favor selecciona una planta primero");
+                return;
+            }
+            
+            if (deptoId === "") {
+                alert("Por favor selecciona un departamento primero");
+                return;
+            }
+            
             const newPuesto = prompt("Ingresa el nombre del nuevo puesto");
             if (newPuesto) {
-                alert(`Agregar puesto: ${newPuesto}`);
+                if (newPuesto.trim() === "") {
+                    alert("El nombre del puesto no puede estar vacío.");
+                    return;
+                }
+                alert(`Agregar puesto: ${newPuesto} a ${deptoId} en ${plantaId}`);
                 // Aquí puedes añadir la lógica para agregar el puesto a la base de datos o la estructura
                 buscar(); // Actualiza la tabla después de agregar el puesto
             }
         }
 
         // Función para editar un puesto
-        function editPuesto(puesto) {
-            const descripcion = prompt("Editar descripción para el puesto", "Descripción actual...");
-            if (descripcion) {
-                alert(`Puesto ${puesto} editado con descripción: ${descripcion}`);
-                // Aquí puedes agregar la lógica para actualizar el puesto en la base de datos o estructura
-                buscar(); // Actualiza la tabla después de editar
+        function editPuesto(plantaId, deptoNombre, puestoNombre) {
+            const newPuesto = prompt("Editar nombre para el puesto", puestoNombre);
+            if (newPuesto) {
+                if (newPuesto.trim() === "") {
+                    alert("El nombre del puesto no puede estar vacío.");
+                    return;
+                }
+
+                try {
+                    alert(`Puesto ${puestoNombre} de ${deptoNombre} en ${plantaId} editado a: ${newPuesto}`);
+                    buscar();
+                } catch (error) {
+                    alert("Ocurrió un error al actualizar el puesto: " + error.message);
+                }
+            } else {
+                alert("Edición cancelada.");
             }
         }
 
         // Función para eliminar un puesto
-        function deletePuesto(puesto) {
-            if (confirm(`¿Estás seguro que deseas eliminar el puesto: ${puesto}?`)) {
-                alert(`Puesto ${puesto} eliminado`);
-                // Aquí puedes añadir la lógica para eliminar el puesto de la base de datos o estructura
-                buscar(); // Actualiza la tabla después de eliminar
+        function deletePuesto(plantaId, deptoNombre, puestoNombre) {
+            if (confirm(`¿Estás seguro que deseas eliminar el puesto: ${puestoNombre} de ${deptoNombre} en ${plantaId}?`)) {
+                alert(`Puesto ${puestoNombre} eliminado`);
+                buscar();
             }
         }
 
