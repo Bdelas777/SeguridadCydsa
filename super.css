@@ -39,9 +39,13 @@
 .dropdown-menu {
   display: none;
   position: absolute;
-  width: 100%;
+  width: max-content; 
+  min-width: 200px; 
+  white-space: normal; 
+  word-wrap: break-word;
   z-index: 1000;
 }
+
 
 .modal {
   display: none;
