@@ -13,7 +13,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
     <link rel="stylesheet" href="super.css">
-    <script src="dummyDataPuesto.js"></script>
+    <script src="dummyData.js"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -66,9 +66,7 @@
         <table class="table table-bordered" id="puestosTable">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Nombre</th>
-                    <th>Descripción</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -82,7 +80,7 @@
         // Función que obtiene los departamentos basados en la planta seleccionada
         function getDeptos() {
             const plantaId = $("#cbosoc").val();
-            const plantaData = dummyDataPuesto.find(planta => planta.planta === plantaId);
+            const plantaData = dummyData.find(planta => planta.planta === plantaId);
             const departamentos = plantaData ? plantaData.superintendentes[0].departamentos : [];
 
             let deptoHtml = "<option value=''>Seleccionar Departamento</option>";
@@ -99,14 +97,14 @@
 
             // Filtrar puestos según el departamento seleccionado
             const plantaId = $("#cbosoc").val();
-            const plantaData = dummyDataPuesto.find(planta => planta.planta === plantaId);
+            const plantaData = dummyData.find(planta => planta.planta === plantaId);
             const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === depName);
 
             const puestos = deptoData ? Object.keys(deptoData.talleres) : [];
 
             let resultHtml = "";
             puestos.forEach(puesto => {
-                const descripcion = deptoData.talleres[puesto].join(", ");
+                const descripcion = deptoDataW[puesto].join(", ");
                 resultHtml += `
                     <tr>
                         <td>${puesto}</td>

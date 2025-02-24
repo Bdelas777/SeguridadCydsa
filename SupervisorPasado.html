@@ -49,6 +49,7 @@
         .modal-backdrop+.modal-backdrop {
             opacity: 0;
         }
+
     </style>
 </head>
 <body>
@@ -286,8 +287,6 @@
         if (validarsup()) {
             $("#msup").modal('hide');
             $("#aviso").modal("show");
-            
-            // Simulate adding supervisor
             setTimeout(() => {
                 $("#aviso").modal("hide");
                 buscar();
