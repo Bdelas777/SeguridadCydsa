@@ -47,10 +47,6 @@
                     <!-- Los departamentos se llenarán con JavaScript -->
                 </select>
             </div>
-
-            <button title="Buscar" type="button" class="btn btn-success" onclick="buscar()">
-                <span class="fa fa-search"></span>
-            </button>
         </form>
     </div>
 
@@ -77,7 +73,9 @@
     </div>
 
     <script>
-        // Función que obtiene los departamentos basados en la planta seleccionada
+         $(function() {
+        });
+
         function getDeptos() {
             const plantaId = $("#cbosoc").val();
             const plantaData = dummyData.find(planta => planta.planta === plantaId);
@@ -91,11 +89,8 @@
             $("#cbodepto").html(deptoHtml);
         }
 
-        // Función de búsqueda
         function buscar() {
             const depName = $("#cbodepto").val();
-
-            // Filtrar puestos según el departamento seleccionado
             const plantaId = $("#cbosoc").val();
             const plantaData = dummyData.find(planta => planta.planta === plantaId);
             const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === depName);
@@ -104,12 +99,10 @@
 
             let resultHtml = "";
             puestos.forEach(puesto => {
-                const descripcion = deptoDataW[puesto].join(", ");
                 resultHtml += `
                     <tr>
                         <td>${puesto}</td>
                         <td>${puesto}</td>
-                        <td>${descripcion}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="editPuesto('${puesto}')">
                                 <span class="fa fa-pencil"></span> Editar
@@ -125,7 +118,7 @@
             $("#puestosList").html(resultHtml);
         }
 
-        // Función para agregar un nuevo puesto
+
         function mAddPuesto() {
             const newPuesto = prompt("Ingresa el nombre del nuevo puesto");
             if (newPuesto) {
