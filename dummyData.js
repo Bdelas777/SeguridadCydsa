@@ -134,6 +134,7 @@ const dummyData = [
             {
               nombre: "Recursos Humanos",
               jefe: "Ximena Lara",
+              puestos: ["Diseñador"],
               talleres: {
                 "Capacitación": ["Yolanda Ponce", "Zacarías Orozco"],
                 "Reclutamiento": ["Alberto Soto", "Beatriz Navarro"]
@@ -151,5 +152,3 @@ const dummyData = [
     "Luis Martínez", "Laura Sánchez", "Roberto González", "Patricia Díaz",
     "Miguel Hernández", "Claudia Torres", "Fernando Ramírez", "Silvia Castro"
   ];
-
-
