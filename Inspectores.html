@@ -64,31 +64,17 @@
             <div class="form-group">
                 <label class="control-label">Planta</label>
                 <select class="form-control" name="cbosoc" id="cbosoc" onchange="getDeptos()">
-                    <option value="Q002-01" >IQ NE                    </option>
-                    <option value="Q010-01" SELECTED>IQ COATZA                    </option>
-                    <option value="Q010-02" >IQ TX                    </option>
-                    <option value="Q010-03" >IQ HM                    </option>
-                    <option value="Q083-01" >IQ SC                    </option>
+                    <option value="" selected>Todos - Plantas</option>
+                    <option value="Q002-01">IQ NE</option>
+                    <option value="Q010-01">IQ COATZA</option>
+                    <option value="Q010-02">IQ TX</option>
+                    <option value="Q010-03">IQ HM</option>
+                    <option value="Q083-01">IQ SC</option>
                 </select>
             </div>
             <div class="form-group">
-                <label class="control-label">Departamento</label>
-                <select class="form-control" name="cbodepto" id="cbodepto" onchange="getSups()">
-                    <option value="1">Llenado Y Embarques</option>
-                    <option value="2">Mantenimiento De Celdas</option>
-                    <option value="3">Produccion Cloro-Sosa</option>
-                    <option value="4">Produccion Solidificacion</option>
-                    <option value="5">Mantenimiento Mecanico</option>
-                    <option value="6">Mantenimiento De Solidificacion</option>
-                    <option value="7">Confiabilidad</option>
-                    <option value="8">Mantenimiento Electrico</option>
-                    <option value="9">Instrumentos</option>
-                    <option value="10">Control Y Electrolisis</option>
-                    <option value="11">Proyectos</option>
-                    <option value="12">Control De Calidad</option>
-                    <option value="13">Servicios Generales</option>
-                    <option value="14">Seguridad Industrial Y Control Ambiental</option>
-                    <option value="15">Taller Eléctrico</option>
+                <select class="form-control" name="cbodepto" id="cbodepto" onchange="getSups();">
+                    <option value="">Seleccionar Departamento</option>
                 </select>
             </div>
             <div class="form-group">
@@ -191,28 +177,55 @@
             getSups();
         });
         function getSups() {
-            var soc = $("#cbosoc").val();
-            var dep = $("#cbodepto").val();
-            var url = "segindadmgrl200a.r?ppasstmp=" + ppasstmp + "&soc=" + soc + "&dep=" + dep + "&sid=" + Math.random();
-            $.ajax({
-                url: url,
-                success: function (result) {
-                    $("#cbosup").html($(result).filter('#sups').html());
-                    buscar();
-                }
-            });
+            const plantaId = $("#cbosoc").val();
+            const deptoName = $("#cbodepto").val();
+
         }
+
         function getDeptos() {
-            var soc = $("#cbosoc").val();
-            var url = "segindadmgrl200c.r?ppasstmp=" + ppasstmp + "&soc=" + soc;
-            $.ajax({
-                url: url,
-                success: function (result) {
-                    $("#cbodepto").html($(result).filter('#deptos').html());
-                    getSups();
+            const plantaId = $("#cbosoc").val();
+            
+            if (plantaId === "") {
+                let deptoHtml = "<option value=''>Todos los Departamentos</option>";
+             
+                const departamentosUnicos = new Set();
+                
+                dummyData.forEach(planta => {
+                    if (planta.superintendentes && planta.superintendentes.length > 0) {
+                        planta.superintendentes[0].departamentos.forEach(depto => {
+                            departamentosUnicos.add(depto.nombre);
+                        });
+                    }
+                });
+                
+    
+                Array.from(departamentosUnicos).sort().forEach(depto => {
+                    deptoHtml += `<option value="${depto}">${depto}</option>`;
+                });
+                
+                $("#cbodepto").html(deptoHtml);
+            } else {
+             
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                let deptoHtml = "<option value=''>Todos los Departamentos</option>";
+                
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+
+                    const departamentos = [...plantaData.superintendentes[0].departamentos];
+                    departamentos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                    
+                    departamentos.forEach(depto => {
+                        deptoHtml += `<option value="${depto.nombre}">${depto.nombre}</option>`;
+                    });
                 }
-            });
+                
+                $("#cbodepto").html(deptoHtml);
+            }
+            
+  
+            buscar();
         }
+
         function mDel(insp) {
             var idinsp = $(insp).data("insp");
             var soc = $("#cbosoc").val();

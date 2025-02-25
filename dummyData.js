@@ -10,7 +10,7 @@ const dummyData = [
               jefe: "Miguel Sánchez",
               puestos: ["Soldador", "Ingeniero"],
               talleres: {
-                "Taller Mecánico": ["Ana López", "José Rodríguez", "Luis Silva"],
+                "Taller Mecánico": ["Ana López" , "José Rodríguez", "Luis Silva"],
                 "Taller Eléctrico": ["Carlos Gómez", "Daniel Reyes"]
               }
             },
