@@ -485,6 +485,7 @@
       const modalLista = $("#modalTallerLista");
       modalLista.empty();
       tallerActual = taller;
+      console.log(tallerActual, "ejemplo")
       superintendenteActual = superintendente;
       $('.modal-title').text(`Personal del Taller: ${taller}`);
   
@@ -515,7 +516,9 @@
       $('#modalTaller').modal('show');
     }
 
+    // Checar pq no se elimina
     function mostrarConfirmacionEliminar(persona) {
+      console.log(persona)
       $('#personaEliminar').val(persona);
       $('#modalTaller').modal('hide');
       $('#modalConfirmacion').modal('show');
@@ -528,10 +531,10 @@
         planta.superintendentes.forEach(function(sup) {
           if (sup.nombre === superintendenteActual) {
             sup.departamentos.forEach(function(dept) {
-              if (dept.talleres[tallerActual]) {
-                const index = dept.talleres[tallerActual].indexOf(persona);
+              if (dept.talleres[tallerActual]) { 
+                const index = dept.talleres[tallerActual].supervisores.indexOf(persona);
                 if (index > -1) {
-                  dept.talleres[tallerActual].splice(index, 1);
+                  dept.talleres[tallerActual].supervisores.splice(index, 1);
                   eliminada = true;
                 }
               }
@@ -571,9 +574,11 @@
         planta.superintendentes.forEach(function(sup) {
           if (sup.nombre === superintendenteActual) {
             sup.departamentos.forEach(function(dept) {
-              if (dept.talleres[tallerActual] && dept.talleres[tallerActual].includes(nombre)) {
-                yaEnTaller = true;
-              }
+              console.log(dept, "Este es el taller")
+              // console.log(dept.talleres[tallerActual], "Aca estoy ")
+              // if (dept.talleres[tallerActual].supervisores.nombre && dept.talleres[tallerActual].supervisores.nombre.includes(nombre)) {
+              //   yaEnTaller = true;
+              // }
             });
           }
         });
@@ -619,8 +624,9 @@
             sup.departamentos.forEach(function(dept) {
               if (dept.talleres[tallerActual]) {
                 nuevasPersonas.forEach(function(persona) {
-                  if (!dept.talleres[tallerActual].includes(persona)) {
-                    dept.talleres[tallerActual].push(persona);
+                  console.log(persona)
+                  if (!dept.talleres[tallerActual].supervisores.includes(persona)) {
+                    dept.talleres[tallerActual].supervisores.push({ nombre: persona, inspectores: []});
                     personasAgregadas++;
                   }
                 });
@@ -685,13 +691,12 @@
               if (sup.nombre === superintendenteActual) {
                 sup.departamentos.forEach(function(dept) {
                   if (dept.talleres[tallerActual]) {
-                    personasEnTaller = dept.talleres[tallerActual];
+                    personasEnTaller = dept.talleres[tallerActual].supervisores;
                   }
                 });
               }
             });
           });
-          
           const personasFiltradas = personasDisponibles.filter(function(persona) {
             return !personasEnTaller.includes(persona) && 
               (request.term === "" || persona.toLowerCase().includes(request.term.toLowerCase()));
