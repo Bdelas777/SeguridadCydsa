@@ -176,9 +176,19 @@
         $(document).ready(function () {
             getSups();
         });
+        
         function getSups() {
             const plantaId = $("#cbosoc").val();
             const deptoName = $("#cbodepto").val();
+            if (plantaId == ""  || deptoName == ""){
+                let supsHtml = "<option value=''>Todos los Supervisores</option>";
+                dummyData.forEach(planta  =>{
+                    if(planta.superintendentes && planta.superintendentes.length > 0){
+
+                    }
+                });
+
+            }
 
         }
 
