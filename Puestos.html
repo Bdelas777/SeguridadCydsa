@@ -90,7 +90,26 @@
         </div>
       </div>
 
-      
+      <div id="modalConfirmacion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">Confirmar Eliminación</h4>
+            </div>
+            <div class="modal-body">
+              <p>¿Está seguro que desea eliminar a esta persona del taller?</p>
+              <input type="hidden" id="puestoEliminar">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <script>
 
@@ -220,7 +239,7 @@
                         <button class="btn btn-warning btn-sm" onclick="editPuesto('${plantaId}', '${deptoNombre}', '${puestoNombre}')">
                             <span class="fa fa-pencil"></span> Editar
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="deletePuesto('${plantaId}', '${deptoNombre}', '${puestoNombre}')">
+                        <button class="btn btn-danger btn-sm" onclick="mostrarConfirmacionEliminar('${puestoNombre}')">
                             <span class="fa fa-trash"></span> Eliminar
                         </button>
                     </td>
@@ -289,9 +308,48 @@
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = "none";
         }
+
+        function mostrarConfirmacionEliminar(puesto) {
+            $('#puestoEliminar').val(puesto);
+            $('#modalConfirmacion').modal('show');
+        }
+
+
+        function eliminarPuesto(puesto) {
+            let eliminada = false;
+            
+            dummyData.forEach(function(planta) {
+                planta.superintendentes.forEach(function(sup) {
+                if (sup.nombre === superintendenteActual) {
+                    sup.departamentos.forEach(function(dept) {
+                    if (dept.puesto[puestoNombre]) {
+                        const index = dept.puesto[puestoNombre].indexOf(puesto);
+                        if (index > -1) {
+                            dept.puesto[puestoNombre].splice(index, 1);
+                            eliminada = true;
+                        }
+                    }
+                    });
+                }
+                });
+            });
+            
+            $('#modalConfirmacion').modal('hide');
+            
+            if (eliminada) {
+                alert(`Se ha eliminado a ${persona} del taller ${tallerActual}`);
+            } else {
+                alert('No se pudo eliminar a la persona seleccionada');
+            }
+            
+            verModal(tallerActual, superintendenteActual);
+        }
     
         $(document).ready(function() {
             getDeptos();
+            $('#btnConfirmarEliminar').on('click', function() {
+                eliminarPuesto($('#puestoEliminar').val());
+            });
             buscar();
             $('#formPuesto').on('submit', function(e) {
                 e.preventDefault();
