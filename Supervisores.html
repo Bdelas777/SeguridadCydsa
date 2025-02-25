@@ -572,17 +572,18 @@
       let yaEnTaller = false;
       dummyData.forEach(function(planta) {
         planta.superintendentes.forEach(function(sup) {
-          if (sup.nombre === superintendenteActual) {
-            sup.departamentos.forEach(function(dept) {
-              console.log(dept, "Este es el taller")
-              // console.log(dept.talleres[tallerActual], "Aca estoy ")
-              // if (dept.talleres[tallerActual].supervisores.nombre && dept.talleres[tallerActual].supervisores.nombre.includes(nombre)) {
-              //   yaEnTaller = true;
-              // }
+          sup.departamentos.forEach(function(dept) {
+            Object.values(dept.talleres).forEach(function(taller) {
+              taller.supervisores.forEach(function(sup) {
+                if (sup.nombre === nombre) {
+                  yaEnTaller = true;
+                  return;
+                }
+              });
             });
-          }
+          });
         });
-      });
+      })
       
       if (yaEnTaller) {
         alert(`¡${nombre} ya pertenece a este taller!`);
