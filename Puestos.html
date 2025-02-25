@@ -293,13 +293,6 @@
             }
         }
 
-
-        function deletePuesto(plantaId, deptoNombre, puestoNombre) {
-            if (confirm(`¿Estás seguro que deseas eliminar el puesto: ${puestoNombre} de ${deptoNombre} en ${plantaId}?`)) {
-                alert(`Puesto ${puestoNombre} eliminado`);
-                buscar();
-            }
-        }
         function openModal(modalId) {
             document.getElementById(modalId).style.display = "flex";
             menu.style.display = "none";

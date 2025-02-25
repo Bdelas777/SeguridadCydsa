@@ -199,7 +199,6 @@
     </div>
   </div>
   
-  
   <div id="modalConfirmacion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
       <div class="modal-content">
@@ -222,7 +221,6 @@
   </div>
 
   <script>
-
     let tallerActual = '';
     let superintendenteActual = '';
     function getUniqueValues(data, key) {
@@ -462,6 +460,7 @@
             Object.keys(dept.talleres).forEach(function(taller) {
               const tallerBtn = $(`<span class="label label-info taller-badge"> <i class="fa fa-eye"></i> ${taller}</span>`);
               tallerBtn.on('click', function() {
+
                 verModal(taller, sup.nombre);
               });
               talleresDiv.append(tallerBtn);
@@ -487,7 +486,6 @@
       modalLista.empty();
       tallerActual = taller;
       superintendenteActual = superintendente;
-      
       $('.modal-title').text(`Personal del Taller: ${taller}`);
   
       dummyData.forEach(function(planta) {
@@ -495,15 +493,16 @@
           if (sup.nombre === superintendente) {
             sup.departamentos.forEach(function(dept) {
               if (dept.talleres[taller]) {
-                const personas = dept.talleres[taller];
+                const personas = dept.talleres[taller].supervisores;
+                console.log(personas)
                 personas.forEach(function(persona) {
                   const btnEliminar = $('<button class="btn btn-danger btn-xs pull-right"><i class="fa fa-trash"></i> Eliminar</button>');
                   btnEliminar.on('click', function() {
-                    mostrarConfirmacionEliminar(persona);
+                    mostrarConfirmacionEliminar(persona.nombre);
                   });
                   
                   const listItem = $('<li class="list-group-item"></li>');
-                  listItem.text(persona);
+                  listItem.text(persona.nombre);
                   listItem.append(btnEliminar);
                   modalLista.append(listItem);
                 });
