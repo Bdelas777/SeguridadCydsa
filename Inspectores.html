@@ -13,44 +13,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
     <link rel="stylesheet" href="super.css">
+    <link rel="stylesheet" href="inspectores.css">
     <script src="dummyData.js"></script>
-    <style>
-        #inspectorModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-        }
-        
-        #inspectorModal .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 50%;
-            max-width: 500px;
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -65,81 +29,161 @@
         </div>
     </div>
 
-    <div class="container" style="margin-top: 20px; margin-bottom: 20px;"> 
-        <form class="form-inline" id="fbinspector">
-            <div class="form-row justify-content-center">
-                <div class="form-group col-md-3 col-sm-12">
-                    <select class="form-control" name="cbosoc" id="cbosoc" onchange="getDeptos()">
-                        <option value="" selected>Todos - Plantas</option>
-                        <option value="Q002-01">IQ NE</option>
-                        <option value="Q010-01">IQ COATZA</option>
-                        <option value="Q010-02">IQ TX</option>
-                        <option value="Q010-03">IQ HM</option>
-                        <option value="Q083-01">IQ SC</option>
-                    </select>
-                </div>
-    
-                <div class="form-group col-md-3 col-sm-12">
-                    <select class="form-control" name="cbodepto" id="cbodepto" onchange="getTalleres()">
-                        <option value="">Seleccionar Departamento</option>
-                    </select>
+    <div class="container" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="filters-container">
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <select class="form-control" name="cbosoc" id="cbosoc" onchange="cargarDatosDisponibles()">
+                            <option value="" selected>Todos - Plantas</option>
+                            <option value="Q002-01">IQ NE</option>
+                            <option value="Q010-01">IQ COATZA</option>
+                            <option value="Q010-02">IQ TX</option>
+                            <option value="Q010-03">IQ HM</option>
+                            <option value="Q083-01">IQ SC</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div class="form-group col-md-3 col-sm-12">
-                    <select class="form-control" name="cbotaller" id="cbotaller" onchange="getSupervisores()">
-                        <option value="">Seleccionar Taller</option>
-                    </select>
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <div class="autocomplete-field">
+                            <input type="text" class="form-control" id="deptoBusqueda" placeholder="Filtrar por departamento">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group col-md-3 col-sm-12">
-                    <select class="form-control" name="cbosup" id="cbosup" onchange="buscar()">
-                        <option value="">Seleccionar Supervisor</option>
-                    </select>
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <div class="autocomplete-field">
+                            <input type="text" class="form-control" id="tallerBusqueda" placeholder="Filtrar por taller">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <div class="autocomplete-field">
+                            <input type="text" class="form-control" id="supervisorBusqueda" placeholder="Filtrar por supervisor">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
+            
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-default" onclick="limpiarFiltros()">
+                        <span class="fa fa-refresh"></span> Limpiar filtros
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="buscar()">
+                        <span class="fa fa-search"></span> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
         
-        <div class="text-right" style="margin-top: 20px;">
-            <button type="button" class="btn btn-primary" onclick="openModal('inspectorModal')">
-                <span class="fa fa-plus"></span>
-                Nuevo inspector
+        <div class="text-right" style="margin-bottom: 20px;">
+            <button type="button" class="btn btn-primary" onclick="abrirModalAgregar()">
+                <span class="fa fa-plus"></span> Nuevo inspector
             </button>
         </div>
     </div>
     
-    <div class="container" id="cont" style="overflow-x:auto;">
-        <table class="table table-bordered" id="inspectoresTable">
-            <thead>
-                <tr>
-                    <th>Planta</th>
-                    <th>Departamento</th>
-                    <th>Taller</th>
-                    <th>Supervisor</th>
-                    <th>Inspector</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="inspectoresList">
-                <!-- Aquí se mostrarán los inspectores -->
-            </tbody>
-        </table>
-    </div>
-
-    <div id="inspectorModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('inspectorModal')">&times;</span>
-            <h2>Agregar Inspector</h2>
-            <form id="formInspector">
-                <div class="form-group">
-                    <label for="nombreInspector">Nombre del Inspector:</label>
-                    <input type="text" class="form-control" id="nombreInspector" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </form>
+    <div class="container" id="inspectoresContainer">
+        <div id="inspectoresList" class="row">
+      
         </div>
     </div>
 
-    <div id="modalConfirmacion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal fade" id="agregarInspectorModal" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modalAgregarLabel">Agregar Inspector</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="formAgregarInspector">
+                        <div class="form-group">
+                            <label for="plantaAgregar">Planta:</label>
+                            <select class="form-control" id="plantaAgregar" required onchange="cargarDeptosAgregar()">
+                                <option value="">Seleccionar Planta</option>
+                                <option value="Q002-01">IQ NE</option>
+                                <option value="Q010-01">IQ COATZA</option>
+                                <option value="Q010-02">IQ TX</option>
+                                <option value="Q010-03">IQ HM</option>
+                                <option value="Q083-01">IQ SC</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deptoAgregar">Departamento:</label>
+                            <select class="form-control" id="deptoAgregar" required onchange="cargarTalleresAgregar()">
+                                <option value="">Seleccionar Departamento</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tallerAgregar">Taller:</label>
+                            <select class="form-control" id="tallerAgregar" required onchange="cargarSupervisoresAgregar()">
+                                <option value="">Seleccionar Taller</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supervisorAgregar">Supervisor:</label>
+                            <select class="form-control" id="supervisorAgregar" required>
+                                <option value="">Seleccionar Supervisor</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nombreInspectorAgregar">Nombre del Inspector:</label>
+                            <input type="text" class="form-control" id="nombreInspectorAgregar" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarInspector()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editarInspectorModal" tabindex="-1" role="dialog" aria-labelledby="modalEditarLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modalEditarLabel">Editar Inspector</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarInspector">
+                    
+                        <div class="form-group">
+                            <label for="nombreInspectorEditar">Nombre del Inspector:</label>
+                            <input type="text" class="form-control" id="nombreInspectorEditar" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="actualizarInspector()">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalConfirmacion" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
@@ -157,8 +201,8 @@
                     <input type="hidden" id="supervisorEliminar">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -173,10 +217,15 @@
             "Q010-03": "IQ HM",
             "Q083-01": "IQ SC"
         };
-
+        
+        let departamentosDisponibles = [];
+        let talleresDisponibles = [];
+        let supervisoresDisponibles = [];
+        
         $(document).ready(function() {
-            getDeptos();
-            
+            cargarDatosDisponibles();
+            configurarAutocompletado();
+            buscar();
             $('#btnConfirmarEliminar').on('click', function() {
                 eliminarInspector(
                     $('#plantaEliminar').val(),
@@ -186,339 +235,150 @@
                     $('#inspectorEliminar').val()
                 );
             });
+
             
-            $('#formInspector').on('submit', function(e) {
-                e.preventDefault();
-                
-                const plantaId = $("#cbosoc").val();
-                const deptoId = $("#cbodepto").val();
-                const tallerId = $("#cbotaller").val();
-                const supervisorId = $("#cbosup").val();
-                const inspectorNombre = $("#nombreInspector").val();
-                
-                if (!plantaId || !deptoId || !tallerId || !supervisorId) {
-                    alert("Por favor selecciona planta, departamento, taller y supervisor");
-                    return;
-                }
-                
-                if (!inspectorNombre.trim()) {
-                    alert("El nombre del inspector no puede estar vacío");
-                    return;
-                }
-                
-                alert(`Inspector ${inspectorNombre} agregado correctamente`);
-                closeModal('inspectorModal');
-                $("#nombreInspector").val("");
-                buscar();
-            });
         });
-
-        function getDeptos() {
+        
+        function cargarDatosDisponibles() {
             const plantaId = $("#cbosoc").val();
             
-            if (plantaId === "") {
-                let deptoHtml = "<option value=''>Todos los Departamentos</option>";
+            departamentosDisponibles = [];
+            talleresDisponibles = [];
+            supervisoresDisponibles = [];
             
-                const departamentosUnicos = new Set();
-                
-                dummyData.forEach(planta => {
-                    if (planta.superintendentes && planta.superintendentes.length > 0) {
-                        planta.superintendentes[0].departamentos.forEach(depto => {
-                            departamentosUnicos.add(depto.nombre);
-                        });
-                    }
-                });
-                
-                Array.from(departamentosUnicos).sort().forEach(depto => {
-                    deptoHtml += `<option value="${depto}">${depto}</option>`;
-                });
-                
-                $("#cbodepto").html(deptoHtml);
-            } else {
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                let deptoHtml = "<option value=''>Todos los Departamentos</option>";
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    const departamentos = [...plantaData.superintendentes[0].departamentos];
-                    departamentos.sort((a, b) => a.nombre.localeCompare(b.nombre));
-                    
-                    departamentos.forEach(depto => {
-                        deptoHtml += `<option value="${depto.nombre}">${depto.nombre}</option>`;
-                    });
-                }
-                
-                $("#cbodepto").html(deptoHtml);
-            }
-            
-            // Resetear los selectores dependientes
-            $("#cbotaller").html("<option value=''>Seleccionar Taller</option>");
-            $("#cbosup").html("<option value=''>Seleccionar Supervisor</option>");
-            
-            buscar();
-        }
-
-        function getTalleres() {
-            const plantaId = $("#cbosoc").val();
-            const deptoId = $("#cbodepto").val();
-            
-            let tallerHtml = "<option value=''>Todos los Talleres</option>";
-            
-            if (plantaId === "" && deptoId === "") {
-                // Todos los talleres de todas las plantas y departamentos
-                const talleresUnicos = new Set();
-                
-                dummyData.forEach(planta => {
-                    if (planta.superintendentes && planta.superintendentes.length > 0) {
-                        planta.superintendentes[0].departamentos.forEach(depto => {
-                            if (depto.talleres) {
-                                Object.keys(depto.talleres).forEach(taller => {
-                                    talleresUnicos.add(taller);
-                                });
-                            }
-                        });
-                    }
-                });
-                
-                Array.from(talleresUnicos).sort().forEach(taller => {
-                    tallerHtml += `<option value="${taller}">${taller}</option>`;
-                });
-            } 
-            else if (plantaId === "" && deptoId !== "") {
-                // Todos los talleres del departamento seleccionado en todas las plantas
-                const talleresUnicos = new Set();
-                
-                dummyData.forEach(planta => {
-                    if (planta.superintendentes && planta.superintendentes.length > 0) {
-                        planta.superintendentes[0].departamentos.forEach(depto => {
-                            if (depto.nombre === deptoId && depto.talleres) {
-                                Object.keys(depto.talleres).forEach(taller => {
-                                    talleresUnicos.add(taller);
-                                });
-                            }
-                        });
-                    }
-                });
-                
-                Array.from(talleresUnicos).sort().forEach(taller => {
-                    tallerHtml += `<option value="${taller}">${taller}</option>`;
-                });
-            }
-            else if (plantaId !== "" && deptoId === "") {
-                // Todos los talleres de la planta seleccionada
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                const talleresUnicos = new Set();
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    plantaData.superintendentes[0].departamentos.forEach(depto => {
-                        if (depto.talleres) {
-                            Object.keys(depto.talleres).forEach(taller => {
-                                talleresUnicos.add(taller);
-                            });
-                        }
-                    });
-                }
-                
-                Array.from(talleresUnicos).sort().forEach(taller => {
-                    tallerHtml += `<option value="${taller}">${taller}</option>`;
-                });
-            }
-            else if (plantaId !== "" && deptoId !== "") {
-                // Talleres del departamento seleccionado en la planta seleccionada
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === deptoId);
-                    
-                    if (deptoData && deptoData.talleres) {
-                        Object.keys(deptoData.talleres).sort().forEach(taller => {
-                            tallerHtml += `<option value="${taller}">${taller}</option>`;
-                        });
-                    }
-                }
-            }
-            
-            $("#cbotaller").html(tallerHtml);
-            
-            // Resetear el selector de supervisores
-            $("#cbosup").html("<option value=''>Seleccionar Supervisor</option>");
-            
-            buscar();
-        }
-
-        function getSupervisores() {
-            const plantaId = $("#cbosoc").val();
-            const deptoId = $("#cbodepto").val();
-            const tallerId = $("#cbotaller").val();
-            
-            let supHtml = "<option value=''>Todos los Supervisores</option>";
-            
-            // Función para agregar supervisores únicos al HTML
-            const agregarSupervisores = (planta, depto, taller) => {
-                if (depto.talleres && depto.talleres[taller] && depto.talleres[taller].supervisores) {
-                    depto.talleres[taller].supervisores.forEach(supervisor => {
-                        supHtml += `<option value="${supervisor.nombre}">${supervisor.nombre}</option>`;
-                    });
+            const agregarUnico = (array, valor) => {
+                if (!array.includes(valor)) {
+                    array.push(valor);
                 }
             };
-            
-            if (plantaId === "" && deptoId === "" && tallerId === "") {
-                // Todos los supervisores de todas las plantas, departamentos y talleres
-                dummyData.forEach(planta => {
+
+            dummyData.forEach(planta => {
+                if (plantaId === "" || planta.planta === plantaId) {
                     if (planta.superintendentes && planta.superintendentes.length > 0) {
                         planta.superintendentes[0].departamentos.forEach(depto => {
+                            agregarUnico(departamentosDisponibles, depto.nombre);
+                            
                             if (depto.talleres) {
                                 Object.keys(depto.talleres).forEach(taller => {
-                                    agregarSupervisores(planta, depto, taller);
+                                    agregarUnico(talleresDisponibles, taller);
+                                    
+                                    if (depto.talleres[taller].supervisores) {
+                                        depto.talleres[taller].supervisores.forEach(supervisor => {
+                                            agregarUnico(supervisoresDisponibles, supervisor.nombre);
+                                        });
+                                    }
                                 });
                             }
                         });
                     }
-                });
-            } 
-            else if (plantaId === "" && deptoId !== "" && tallerId === "") {
-                // Todos los supervisores del departamento seleccionado en todas las plantas
-                dummyData.forEach(planta => {
-                    if (planta.superintendentes && planta.superintendentes.length > 0) {
-                        planta.superintendentes[0].departamentos.forEach(depto => {
-                            if (depto.nombre === deptoId && depto.talleres) {
-                                Object.keys(depto.talleres).forEach(taller => {
-                                    agregarSupervisores(planta, depto, taller);
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-            else if (plantaId === "" && deptoId === "" && tallerId !== "") {
-                // Todos los supervisores del taller seleccionado en todas las plantas y departamentos
-                dummyData.forEach(planta => {
-                    if (planta.superintendentes && planta.superintendentes.length > 0) {
-                        planta.superintendentes[0].departamentos.forEach(depto => {
-                            if (depto.talleres && depto.talleres[tallerId]) {
-                                agregarSupervisores(planta, depto, tallerId);
-                            }
-                        });
-                    }
-                });
-            }
-            else if (plantaId === "" && deptoId !== "" && tallerId !== "") {
-                // Todos los supervisores del taller seleccionado en el departamento seleccionado en todas las plantas
-                dummyData.forEach(planta => {
-                    if (planta.superintendentes && planta.superintendentes.length > 0) {
-                        planta.superintendentes[0].departamentos.forEach(depto => {
-                            if (depto.nombre === deptoId && depto.talleres && depto.talleres[tallerId]) {
-                                agregarSupervisores(planta, depto, tallerId);
-                            }
-                        });
-                    }
-                });
-            }
-            else if (plantaId !== "" && deptoId === "" && tallerId === "") {
-                // Todos los supervisores de la planta seleccionada
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    plantaData.superintendentes[0].departamentos.forEach(depto => {
-                        if (depto.talleres) {
-                            Object.keys(depto.talleres).forEach(taller => {
-                                agregarSupervisores(plantaData, depto, taller);
-                            });
-                        }
-                    });
                 }
-            }
-            else if (plantaId !== "" && deptoId !== "" && tallerId === "") {
-                // Todos los supervisores del departamento seleccionado en la planta seleccionada
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === deptoId);
-                    
-                    if (deptoData && deptoData.talleres) {
-                        Object.keys(deptoData.talleres).forEach(taller => {
-                            agregarSupervisores(plantaData, deptoData, taller);
-                        });
-                    }
-                }
-            }
-            else if (plantaId !== "" && deptoId === "" && tallerId !== "") {
-                // Todos los supervisores del taller seleccionado en la planta seleccionada
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    plantaData.superintendentes[0].departamentos.forEach(depto => {
-                        if (depto.talleres && depto.talleres[tallerId]) {
-                            agregarSupervisores(plantaData, depto, tallerId);
-                        }
-                    });
-                }
-            }
-            else if (plantaId !== "" && deptoId !== "" && tallerId !== "") {
-                // Supervisores del taller seleccionado en el departamento seleccionado en la planta seleccionada
-                const plantaData = dummyData.find(planta => planta.planta === plantaId);
-                
-                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
-                    const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === deptoId);
-                    
-                    if (deptoData && deptoData.talleres && deptoData.talleres[tallerId]) {
-                        agregarSupervisores(plantaData, deptoData, tallerId);
-                    }
-                }
-            }
+            });
             
-            $("#cbosup").html(supHtml);
+            departamentosDisponibles.sort();
+            talleresDisponibles.sort();
+            supervisoresDisponibles.sort();
             
+            $("#deptoBusqueda").autocomplete("option", "source", departamentosDisponibles);
+            $("#tallerBusqueda").autocomplete("option", "source", talleresDisponibles);
+            $("#supervisorBusqueda").autocomplete("option", "source", supervisoresDisponibles);
+        }
+        
+        function configurarAutocompletado() {
+            $("#deptoBusqueda").autocomplete({
+                source: departamentosDisponibles,
+                minLength: 0,
+                select: function(event, ui) {
+                    buscar();
+                }
+            }).on('focus', function() {
+                $(this).autocomplete("search", "");
+            });
+            
+            $("#tallerBusqueda").autocomplete({
+                source: talleresDisponibles,
+                minLength: 0,
+                select: function(event, ui) {
+                    buscar();
+                }
+            }).on('focus', function() {
+                $(this).autocomplete("search", "");
+            });
+            
+            $("#supervisorBusqueda").autocomplete({
+                source: supervisoresDisponibles,
+                minLength: 0,
+                select: function(event, ui) {
+                    buscar();
+                }
+            }).on('focus', function() {
+                $(this).autocomplete("search", "");
+            });
+        }
+        
+        function limpiarFiltros() {
+            $("#cbosoc").val("");
+            $("#deptoBusqueda").val("");
+            $("#tallerBusqueda").val("");
+            $("#supervisorBusqueda").val("");
+            
+            cargarDatosDisponibles();
             buscar();
         }
-
+        
         function buscar() {
             const plantaId = $("#cbosoc").val();
-            const deptoId = $("#cbodepto").val();
-            const tallerId = $("#cbotaller").val();
-            const supervisorId = $("#cbosup").val();
+            const deptoNombre = $("#deptoBusqueda").val();
+            const tallerNombre = $("#tallerBusqueda").val();
+            const supervisorNombre = $("#supervisorBusqueda").val();
             
-            let resultHtml = "";
+            let inspectoresHTML = "";
+            let encontrados = false;
             
-            // Función para procesar y mostrar inspectores
             const procesarInspectores = (planta, depto, taller, supervisor) => {
                 const plantaNombre = plantasNombres[planta.planta] || planta.planta;
                 
                 supervisor.inspectores.forEach(inspector => {
-                    resultHtml += `
-                        <tr>
-                            <td>${plantaNombre}</td>
-                            <td>${depto.nombre}</td>
-                            <td>${taller}</td>
-                            <td>${supervisor.nombre}</td>
-                            <td>${inspector}</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" onclick="editarInspector('${planta.planta}', '${depto.nombre}', '${taller}', '${supervisor.nombre}', '${inspector}')">
-                                    <span class="fa fa-pencil"></span> Editar
-                                </button>
-                                <button class="btn btn-danger btn-sm" onclick="mostrarConfirmacionEliminar('${planta.planta}', '${depto.nombre}', '${taller}', '${supervisor.nombre}', '${inspector}')">
-                                    <span class="fa fa-trash"></span> Eliminar
-                                </button>
-                            </td>
-                        </tr>
+                    encontrados = true;
+                    inspectoresHTML += `
+                        <div class="col-md-4 col-sm-6">
+                            <div class="panel panel-default inspector-card">
+                                <div class="panel-heading card-header">
+                                    <h4 class="panel-title">${inspector}</h4>
+                                </div>
+                                <div class="panel-body card-body">
+                                    <p><strong>Planta:</strong> ${plantaNombre}</p>
+                                    <p><strong>Departamento:</strong> ${depto.nombre}</p>
+                                    <p><strong>Taller:</strong> ${taller}</p>
+                                    <p><strong>Supervisor:</strong> ${supervisor.nombre}</p>
+                                </div>
+                                <div class="panel-footer card-footer">
+                                    <button class="btn btn-warning btn-sm" onclick="editarInspector('${planta.planta}', '${depto.nombre}', '${taller}', '${supervisor.nombre}', '${inspector}')">
+                                        <span class="fa fa-pencil"></span> Editar
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="mostrarConfirmacionEliminar('${planta.planta}', '${depto.nombre}', '${taller}', '${supervisor.nombre}', '${inspector}')">
+                                        <span class="fa fa-trash"></span> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     `;
                 });
             };
             
-            // Buscar inspectores según los filtros seleccionados
             dummyData.forEach(planta => {
                 if (plantaId !== "" && planta.planta !== plantaId) return;
                 
                 if (planta.superintendentes && planta.superintendentes.length > 0) {
                     planta.superintendentes[0].departamentos.forEach(depto => {
-                        if (deptoId !== "" && depto.nombre !== deptoId) return;
+                        if (deptoNombre !== "" && depto.nombre !== deptoNombre) return;
                         
                         if (depto.talleres) {
                             Object.keys(depto.talleres).forEach(taller => {
-                                if (tallerId !== "" && taller !== tallerId) return;
+                                if (tallerNombre !== "" && taller !== tallerNombre) return;
                                 
                                 if (depto.talleres[taller].supervisores) {
                                     depto.talleres[taller].supervisores.forEach(supervisor => {
-                                        if (supervisorId !== "" && supervisor.nombre !== supervisorId) return;
+                                        if (supervisorNombre !== "" && supervisor.nombre !== supervisorNombre) return;
                                         
                                         procesarInspectores(planta, depto, taller, supervisor);
                                     });
@@ -529,31 +389,141 @@
                 }
             });
             
-            $("#inspectoresList").html(resultHtml || "<tr><td colspan='6' class='text-center'>No se encontraron inspectores</td></tr>");
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = "flex";
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = "none";
-        }
-
-        function editarInspector(plantaId, deptoNombre, tallerNombre, supervisorNombre, inspectorNombre) {
-            const nuevoNombre = prompt("Editar nombre del inspector", inspectorNombre);
-            
-            if (nuevoNombre) {
-                if (nuevoNombre.trim() === "") {
-                    alert("El nombre del inspector no puede estar vacío.");
-                    return;
-                }
-                
-                alert(`Inspector ${inspectorNombre} editado a: ${nuevoNombre}`);
-                buscar();
+            if (!encontrados) {
+                inspectoresHTML = `
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            No se encontraron inspectores con los filtros seleccionados.
+                        </div>
+                    </div>
+                `;
             }
+            
+            $("#inspectoresList").html(inspectoresHTML);
         }
+        
+        function abrirModalAgregar() {
+            $("#formAgregarInspector")[0].reset();
+            $("#deptoAgregar").html("<option value=''>Seleccionar Departamento</option>");
+            $("#tallerAgregar").html("<option value=''>Seleccionar Taller</option>");
+            $("#supervisorAgregar").html("<option value=''>Seleccionar Supervisor</option>");
+            $("#agregarInspectorModal").modal("show");
+        }
+        
+        function cargarDeptosAgregar() {
+            const plantaId = $("#plantaAgregar").val();
+            let opcionesHtml = "<option value=''>Seleccionar Departamento</option>";
+            
+            if (plantaId !== "") {
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+                    const departamentos = [...plantaData.superintendentes[0].departamentos];
+                    departamentos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                    
+                    departamentos.forEach(depto => {
+                        opcionesHtml += `<option value="${depto.nombre}">${depto.nombre}</option>`;
+                    });
+                }
+            }
+            
+            $("#deptoAgregar").html(opcionesHtml);
+            $("#tallerAgregar").html("<option value=''>Seleccionar Taller</option>");
+            $("#supervisorAgregar").html("<option value=''>Seleccionar Supervisor</option>");
+        }
+        
+        function cargarTalleresAgregar() {
+            const plantaId = $("#plantaAgregar").val();
+            const deptoId = $("#deptoAgregar").val();
+            let opcionesHtml = "<option value=''>Seleccionar Taller</option>";
+            
+            if (plantaId !== "" && deptoId !== "") {
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+                    const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === deptoId);
+                    
+                    if (deptoData && deptoData.talleres) {
+                        Object.keys(deptoData.talleres).sort().forEach(taller => {
+                            opcionesHtml += `<option value="${taller}">${taller}</option>`;
+                        });
+                    }
+                }
+            }
+            
+            $("#tallerAgregar").html(opcionesHtml);
+            $("#supervisorAgregar").html("<option value=''>Seleccionar Supervisor</option>");
+        }
+        
+        function cargarSupervisoresAgregar() {
+            const plantaId = $("#plantaAgregar").val();
+            const deptoId = $("#deptoAgregar").val();
+            const tallerId = $("#tallerAgregar").val();
+            let opcionesHtml = "<option value=''>Seleccionar Supervisor</option>";
+            
+            if (plantaId !== "" && deptoId !== "" && tallerId !== "") {
+                const plantaData = dummyData.find(planta => planta.planta === plantaId);
+                
+                if (plantaData && plantaData.superintendentes && plantaData.superintendentes.length > 0) {
+                    const deptoData = plantaData.superintendentes[0].departamentos.find(depto => depto.nombre === deptoId);
+                    
+                    if (deptoData && deptoData.talleres && deptoData.talleres[tallerId] && deptoData.talleres[tallerId].supervisores) {
+                        deptoData.talleres[tallerId].supervisores.forEach(supervisor => {
+                            opcionesHtml += `<option value="${supervisor.nombre}">${supervisor.nombre}</option>`;
+                        });
+                    }
+                }
+            }
+            
+            $("#supervisorAgregar").html(opcionesHtml);
+        }
+        
+        function guardarInspector() {
+            const plantaId = $("#plantaAgregar").val();
+            const deptoId = $("#deptoAgregar").val();
+            const tallerId = $("#tallerAgregar").val();
+            const supervisorId = $("#supervisorAgregar").val();
+            const inspectorNombre = $("#nombreInspectorAgregar").val();
+            
+            if (!plantaId || !deptoId || !tallerId || !supervisorId) {
+                alert("Por favor seleccione planta, departamento, taller y supervisor");
+                return;
+            }
+            
+            if (!inspectorNombre.trim()) {
+                alert("El nombre del inspector no puede estar vacío");
+                return;
+            }
+            
+            alert(`Inspector ${inspectorNombre} agregado correctamente`);
+            $("#agregarInspectorModal").modal("hide");
+            buscar();
+        }
+        
+        function editarInspector(plantaId, deptoNombre, tallerNombre, supervisorNombre, inspectorNombre) {
+            $("#plantaEditar").val(plantaId);
+            $("#deptoEditar").val(deptoNombre);
+            $("#tallerEditar").val(tallerNombre);
+            $("#supervisorEditar").val(supervisorNombre);
+            $("#inspectorOriginal").val(inspectorNombre);
+            $("#nombreInspectorEditar").val(inspectorNombre);
+            $("#editarInspectorModal").modal("show");
+        }
+        
+        function actualizarInspector() {
+            const nuevoNombre = $("#nombreInspectorEditar").val();
+            const inspectorOriginal = $("#inspectorOriginal").val();
+            
+            if (!nuevoNombre.trim()) {
+                alert("El nombre del inspector no puede estar vacío");
+                return;
+            }
 
+            alert(`Inspector ${inspectorOriginal} editado a: ${nuevoNombre}`);
+            $("#editarInspectorModal").modal("hide");
+            buscar();
+        }
+        
         function mostrarConfirmacionEliminar(plantaId, deptoNombre, tallerNombre, supervisorNombre, inspectorNombre) {
             $('#plantaEliminar').val(plantaId);
             $('#deptoEliminar').val(deptoNombre);
@@ -562,7 +532,7 @@
             $('#inspectorEliminar').val(inspectorNombre);
             $('#modalConfirmacion').modal('show');
         }
-
+        
         function eliminarInspector(plantaId, deptoNombre, tallerNombre, supervisorNombre, inspectorNombre) {
             alert(`Inspector ${inspectorNombre} eliminado correctamente`);
             $('#modalConfirmacion').modal('hide');

@@ -35,13 +35,14 @@
               <li role="presentation"><a href="/Inspectores.html">INSPECTORES</a></li>
               <li role="presentation"><a href="/Puestos.html">PUESTOS</a></li>
               <li role="presentation"><a href="/Formatos.html">FORMATOS DE INSP.</a></li>
-              <li role="presentation"  class="active"><a href="/Rubros.html">RUBROS</a></li>                         
+              <li role="presentation "  class="active"><a href="/Rubros.html">RUBROS</a></li>                         
             </ul>
           </div>
         <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG" id="ppasstmp">
         <form class="form-inline text-center" id="fpart">
             <input type="hidden" name="ppasstmp" value="3526345704fOEFnBdiDkFLdJolPMuTYeiwmvxEByPCJGVQQpwrElrEzGgYjKXZJGasgliOHrOfAOLXkiBcBvHbaleUqhMymaNaHG">
             <div class="form-group">
+                <label class="control-label">Planta</label>
                 <select class="form-control" name="cbosoc" id="cbosoc">
                     <option value="Q002-01" >IQ NE                    </option>
                     <option value="Q010-01" >IQ COATZA                    </option>
@@ -67,6 +68,48 @@
             <br>
             <div id="contres" class="table-responsive">
             </div>
+            <!-- <table id="tbl" class="table table-striped table-hover table-condensed table-bordered ">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Descripción</th>
+                        <th class="col10">Porcentaje</th>
+                        <th class="col10">Min</th>
+                        <th class="col10">Obligatorio</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order">1</td>
+                        <td>
+                            <input id="preg1" type="text" class="form-control">
+                        </td>
+                        <td>
+                            <input id="preg1" type="text" class="form-control">
+                        </td>
+                        <td>
+                            <input class="form-control" id="styled-checkbox-1" type="text">
+                        </td>
+                        <td>
+                            <input class="styled-checkbox" id="styled-checkbox-1" type="checkbox" value="value1">
+                            <label for="styled-checkbox-1">&nbsp;</label>
+                        </td>
+                        <td>
+                            <button id="btndel1" title="ELIMINAR" class="btn btn-danger btn-md" onclick="remove(this)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: end;">
+                            <button title="AGREGAR" class="btn btn-success btn-md" onclick="add()">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> -->
         </div>
         <div class="modal fade" id="modalAdd">
             <div class="modal-dialog modal-md">
