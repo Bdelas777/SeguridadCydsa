@@ -18,7 +18,7 @@ const dummyData = [
                   },
                   {
                     nombre: "José Ramirez",
-                    inspectores: []
+                    inspectores: ["Mario Perez", "Luis Galvez"]
                   }
                 ]
               },
@@ -49,7 +49,7 @@ const dummyData = [
                 supervisores: [
                   {
                     nombre: "Carlos Gómez",
-                    inspectores: []
+                    inspectores: ["Pedro de la Rosa"]
                   },
                   {
                     nombre: "Daniel Reyes",
@@ -85,7 +85,7 @@ const dummyData = [
                 supervisores: [
                   {
                     nombre: "Gloria Vega",
-                    inspectores: []
+                    inspectores: ["Juana Perez"]
                   },
                   {
                     nombre: "Héctor Morales",
@@ -145,7 +145,7 @@ const dummyData = [
                 supervisores: [
                   {
                     nombre: "Ignacio Ramos",
-                    inspectores: []
+                    inspectores: ["Maria Gomez"]
                   },
                   {
                     nombre: "Juana Ortiz",
@@ -179,7 +179,7 @@ const dummyData = [
                   },
                   {
                     nombre: "Ricardo Montes",
-                    inspectores: []
+                    inspectores: ["Ricardo Leon"]
                   }
                 ]
               },
@@ -216,7 +216,7 @@ const dummyData = [
                 supervisores: [
                   {
                     nombre: "Óscar Medina",
-                    inspectores: []
+                    inspectores: ["Carolina Herrera"]
                   },
                   {
                     nombre: "Patricia Castro",
@@ -232,7 +232,7 @@ const dummyData = [
                   },
                   {
                     nombre: "Raúl Guerrero",
-                    inspectores: []
+                    inspectores: ["Juan Lopez"]
                   }
                 ]
               }
@@ -273,7 +273,7 @@ const dummyData = [
                   },
                   {
                     nombre: "Wilson Fuentes",
-                    inspectores: []
+                    inspectores: ["Jesus brown"]
                   }
                 ]
               }
@@ -341,11 +341,11 @@ const dummyData = [
                 supervisores: [
                   {
                     nombre: "Alberto Soto",
-                    inspectores: []
+                    inspectores: ["Maria de la Rosa", "Juan de la Cruz"]
                   },
                   {
                     nombre: "Beatriz Navarro",
-                    inspectores: []
+                    inspectores: ["Aldo   Vargas"]
                   }
                 ]
               }
